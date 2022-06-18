@@ -1,0 +1,11 @@
+<?xml version="1.0"?>
+<page xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" layout="admin-2columns-left" xsi:noNamespaceSchemaLocation="urn:magento:framework:View/Layout/etc/page_configuration.xsd">
+    <head>
+        <css src="Aurigma_CustomersCanvas::css/admin-settings.css"/>
+        <link src="Aurigma_CustomersCanvas::js/admin-settings.js"/>
+        <link src="Aurigma_CustomersCanvas::js/vendor/jquery-simple-upload.js"/>
+    </head>
+    <referenceContainer name="content">
+        <block name="customerscanvas.system.config.upload" class="Aurigma\CustomersCanvas\Block\Adminhtml\System\Config\UploadFrom"/>
+    </referenceContainer>
+</page>

@@ -1,0 +1,11 @@
+<?xml version="1.0"?>
+<page xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="urn:magento:framework:View/Layout/etc/page_configuration.xsd">
+    <body>
+        <referenceContainer name="additional.product.info">
+            <block name="customerscanvas.cart_item_return_to_edit" 
+                   class="Aurigma\CustomersCanvas\Block\Frontend\CartItem\ReturnToEditLink"  
+                   template="Aurigma_CustomersCanvas::checkout/cart/item/return_to_edit.phtml" 
+                   cacheable="false"/>
+        </referenceContainer>
+    </body>
+</page>

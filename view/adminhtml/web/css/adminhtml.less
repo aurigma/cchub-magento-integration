@@ -1,0 +1,23 @@
+@customerscanvas-icons-admin__font-name : 'customerscanvas-icon';
+
+@font-face {
+    font-family: @customerscanvas-icons-admin__font-name;
+    src: url('../fonts/aurigma-cc-icon.ttf');
+}
+
+.admin__menu .level-0._active.item-customerscanvas > a:before {
+    color: white;
+}
+
+.admin__menu .level-0.item-customerscanvas:hover > a:before {
+    color: white;
+}
+
+.admin__menu .level-0.item-customerscanvas > a:before {
+    font-family: @customerscanvas-icons-admin__font-name;
+    content: "\e900";
+    color: rgb(170, 167, 160);
+    size: 2.4rem;
+    position: relative;
+    top: -2px;
+}

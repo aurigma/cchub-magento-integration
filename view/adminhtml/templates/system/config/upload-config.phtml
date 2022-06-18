@@ -1,0 +1,16 @@
+<?php /* @var $block \Aurigma\CustomersCanvas\Block\Adminhtml\System\Config\UploadConfig */ ?>
+
+<?= $block->getButtonHtml(); ?>
+
+<script>
+require([
+    "jquery",
+    "jquery/ui"
+], function($){
+
+    $('#customers-canvas_upload-button').click(function(){
+        $('#customers-canvas_upload-config-file').click();
+    });
+
+});
+</script>

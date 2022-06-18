@@ -1,0 +1,27 @@
+{
+    "name": "aurigma/magento-customers-canvas",
+    "description": "Enable online print product personalization for your Magento 2 storefront.",
+    "type": "magento2-module",
+    "version": "0.0.2",
+    "authors": [
+        {
+            "name": "Aurigma Inc",
+            "email": "info@aurigma.com"
+        }
+    ],
+    "minimum-stability": "stable",
+    "require": {
+        "php": "~7.3.0||~7.4.0",
+        "aurigma/php-storefront-client": "^1.0",
+        "aurigma/php-asset-storage-client": "^1.0",
+        "jumbojett/openid-connect-php": "^0.9.2"
+    },
+    "autoload": {
+        "files": [
+            "registration.php"
+        ],
+        "psr-4": {
+            "Aurigma\\CustomersCanvas\\": ""
+        }
+    }
+}

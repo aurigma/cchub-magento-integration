@@ -1,0 +1,9 @@
+<?xml version="1.0"?>
+<config xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="urn:magento:framework:ObjectManager/etc/config.xsd">
+    <type name="Magento\Checkout\CustomerData\AbstractItem">
+        <plugin name="Aurigma\CustomersCanvas\Plugin\Minicart\Image" type="Aurigma\CustomersCanvas\Plugin\Minicart\Image" sortOrder="1"/>
+    </type>
+    <type name="Magento\Checkout\Block\Cart\Item\Renderer">
+        <plugin name="Aurigma\CustomersCanvas\Plugin\CheckoutCart\Image" type="Aurigma\CustomersCanvas\Plugin\CheckoutCart\Image" sortOrder="1"/>
+    </type>
+</config>

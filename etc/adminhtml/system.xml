@@ -1,0 +1,88 @@
+<?xml version="1.0"?>
+<config xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="urn:magento:module:Magento_Config:etc/system_file.xsd">
+    <system>
+        <tab id="customers_canvas" sortOrder="1800">
+            <label>Customer's Canvas</label>
+        </tab>
+
+        <section id="customers_canvas_settings" translate="label" sortOrder="10" showInDefault="1" showInWebsite="1" showInStore="1">
+            <class>separator-top</class>
+            <label>Settings</label>
+            <tab>customers_canvas</tab>
+            <resource>Aurigma_CustomersCanvas::settings</resource>
+            
+            <group id="connect" translate="label comment" type="text" sortOrder="10" showInDefault="1" showInWebsite="1" showInStore="1">
+                <label>Connect to Customer's Canvas</label>
+                <comment><![CDATA[In BackOffice, navigate to <b>Settings > Integration > Create new</b>. When a window opens, fill out the form. Click Save to create a new record. Click ellipses (•••) next to this record to open the menu, and then click <b>Get settings.</b> Save file as config.json.]]></comment>
+                <attribute type="expanded">1</attribute>
+
+                <field id="upload_config" translate="label" type="file" sortOrder="1" showInDefault="1" showInWebsite="1" showInStore="1">
+                    <label>Upload config by json file</label>
+                    <frontend_model>Aurigma\CustomersCanvas\Block\Adminhtml\System\Config\UploadConfig</frontend_model>
+                </field>
+
+                <field id="backoffice_url" translate="label" type="text" sortOrder="1" showInDefault="1" showInWebsite="1" showInStore="1">
+                    <label>BackOffice (URL)</label>
+                </field>
+                <field id="assetstorage_url" translate="label" type="text" sortOrder="1" showInDefault="1" showInWebsite="1" showInStore="1">
+                    <label>AssetStorage (URL)</label>
+                </field>
+                <field id="assetprocessor_url" translate="label" type="text" sortOrder="1" showInDefault="1" showInWebsite="1" showInStore="1">
+                    <label>AssetProcessor (URL)</label>
+                </field>
+                <field id="tenancyname" translate="label" type="text" sortOrder="1" showInDefault="1" showInWebsite="1" showInStore="1">
+                    <label>Tenancy name</label>
+                </field>
+                <field id="tenantid" translate="label" type="text" sortOrder="1" showInDefault="1" showInWebsite="1" showInStore="1">
+                    <label>BackOffice tenant ID</label>
+                </field>
+                <field id="storefrontid" translate="label" type="text" sortOrder="1" showInDefault="1" showInWebsite="1" showInStore="1">
+                    <label>BackOffice storefront ID</label>
+                </field>
+
+                <field id="clientid" translate="label" type="text" sortOrder="1" showInDefault="1" showInWebsite="1" showInStore="1">
+                    <label>BackOffice client ID</label>
+                </field>
+                <field id="client_secret" translate="label" type="password" sortOrder="1" showInDefault="1" showInWebsite="1" showInStore="1">
+                    <label>BackOffice client secret</label>
+                    <frontend_model>Aurigma\CustomersCanvas\Block\Adminhtml\System\Config\NoAutoComplete</frontend_model>
+                </field>
+            </group>
+
+            <group id="editor" translate="label comment" type="text" sortOrder="10" showInDefault="1" showInWebsite="1" showInStore="1">
+                <label>Editor view</label>
+                <attribute type="expanded">1</attribute>
+                <field id="popup_mode" translate="label" type="select" sortOrder="1" showInDefault="1" showInWebsite="1" showInStore="1">
+                    <label>Open editor in</label>
+                    <source_model>Aurigma\CustomersCanvas\Model\Config\Source\EditorMode</source_model>
+                </field>
+            </group>
+        </section>
+
+        <section id="customers_canvas_management" translate="label" sortOrder="20" showInDefault="1" showInWebsite="1" showInStore="1">
+            <class>separator-top</class>
+            <label>Management</label>
+            <tab>customers_canvas</tab>
+            <resource>Aurigma_CustomersCanvas::management</resource>
+            <group id="links" translate="label comment" type="text" sortOrder="10" showInDefault="1" showInWebsite="1" showInStore="1">
+                <label>Links</label>
+                <field id="manage" translate="label comment" type="label" sortOrder="40" showInDefault="1" showInWebsite="1" showInStore="1">
+                    <label><![CDATA[<strong>Manage</strong>]]></label>
+                    <comment><![CDATA[To manage your Customer's Canvas account follow <a href="https://customerscanvashub.com/" target="_blank">this link</a>]]></comment>
+                    <frontend_model>Aurigma\CustomersCanvas\Block\Adminhtml\System\Config\AdditionalComment</frontend_model>
+                </field>
+                <field id="help" translate="label comment" type="label" sortOrder="40" showInDefault="1" showInWebsite="1" showInStore="1">
+                    <label><![CDATA[<strong>Help</strong>]]></label>
+                    <comment><![CDATA[If you need any guidance about using Customer's Canvas follow <a href="https://customerscanvas.com/help" target="_blank">this link</a>]]></comment>
+                    <frontend_model>Aurigma\CustomersCanvas\Block\Adminhtml\System\Config\AdditionalComment</frontend_model>
+                </field>
+                <field id="support" translate="label comment" type="label" sortOrder="40" showInDefault="1" showInWebsite="1" showInStore="1">
+                    <label><![CDATA[<strong>Support</strong>]]></label>
+                    <comment><![CDATA[If you want to ask any questions or report a problem concerning Customer's Canvas follow <a href="https://customerscanvas.com/account/cases" target="_blank">this link</a>]]></comment>
+                    <frontend_model>Aurigma\CustomersCanvas\Block\Adminhtml\System\Config\AdditionalComment</frontend_model>
+                </field>
+            </group>
+        </section>
+
+    </system>
+</config>

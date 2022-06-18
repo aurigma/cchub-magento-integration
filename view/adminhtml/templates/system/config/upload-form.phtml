@@ -1,0 +1,80 @@
+<?php /* @var $block \Aurigma\CustomersCanvas\Block\Adminhtml\System\Config\UploadFrom */ ?>
+
+<form method="post" action="<?= $block->getAjaxUrl(); ?>">
+    <input type="file" name="ConfigFile" id="customers-canvas_upload-config-file" style="display: none;" />
+</form>
+
+<script>
+
+require([
+    'jquery',
+    'jquery/ui',
+    'mage/backend/notification',
+], function($, jqueryUi, notification) {
+
+    function getCurrentScope() {
+        const locationArray = window.location.pathname.split('/');
+        let scope = {};
+        if(locationArray.indexOf('website') !== -1) {
+            locationArray.splice(0, locationArray.indexOf('website'));
+            return scope = {
+                type: 'websites',
+                id: locationArray[1],
+            };
+        } else if(locationArray.indexOf('store') !== -1) {
+            locationArray.splice(0, locationArray.indexOf('store'));
+            return scope = {
+                type: 'stores',
+                id: locationArray[1],
+            }; 
+        } else {
+            return scope = {
+                type: 'default',
+            };
+        }
+    }
+
+    function validate(files) {
+        var passed = []
+        for (var i=0; i < files.length; i++) {
+            if (files[i].name.match(/\.json$/) === null) {
+                alert('<?= $block->getFileValidateErrorMessage() ?>');
+            } else {
+                passed.push(files[i]);
+            }
+        }
+        return passed;
+    }
+    
+    const cc_scope = getCurrentScope();
+
+    $('#customers-canvas_upload-config-file').simpleUpload({
+        url: '<?= $block->getAjaxUrl(); ?>' + '?isAjax=true',
+        method:'post',
+        allowedFileName: /\.json$/,
+        validator: validate,
+        params: { 
+            form_key: window.FORM_KEY,
+            scopeType: cc_scope.type,
+            scopeId: cc_scope.id,
+        },
+    }).on('upload:before', function(e, files) {
+        $('body').notification('clear')
+    }).on('upload:done', function(e, file, i, data) {
+        location.reload(); 
+    }).on('upload:fail', function(e, file, i) {
+        $('body').notification('clear')
+            .notification('add', {
+                error: true,
+                message: $.mage.__('Error when updating settings from file.'),
+                insertMethod: function (message) {
+                    var $wrapper = $('<div/>').html(message);
+
+                    $('.page-main-actions').after($wrapper);
+                }
+            });
+    });
+
+});
+
+</script>

@@ -1,0 +1,39 @@
+
+.customers-canvas {
+    &-additional-comment {
+        border-color: #ccc;
+        border-style: solid;
+        border-width: 1px 0;
+        border-bottom: none;
+        padding: 1rem;
+
+        &__row:last-child {
+            border-bottom: 1px solid #ccc;
+        }
+
+        &__title {
+            margin-bottom: 0.5rem;
+        }
+
+        &__content {
+            line-height: 1.5;
+        }
+    }
+
+
+    &__input-password-group {
+        display: flex;
+    }
+
+    &__form-action-button {
+        min-width: 44px;
+        margin-left: 12px;
+    }
+}
+
+#customers_canvas_settings_connect_client_secret:not([disabled]) {
+    background-color: white;
+    border-color: #adadad;
+    opacity: 1;
+    flex-grow: 1;
+}

@@ -1,0 +1,9 @@
+<script type="text/x-magento-init">
+{
+    "[data-role=tocart-form], .form.map.checkout": {
+        "catalogAddToCart": {
+            "integratedList" : <?= json_encode($block->getIntegratedProductList()); ?>
+        }
+    }
+}
+</script>

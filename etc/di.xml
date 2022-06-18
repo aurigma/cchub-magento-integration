@@ -1,0 +1,145 @@
+<?xml version="1.0"?>
+<config xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+        xsi:noNamespaceSchemaLocation="urn:magento:framework:ObjectManager/etc/config.xsd">
+
+    <type name="Magento\Framework\App\Action\AbstractAction">
+    	<plugin name="Aurigma\CustomersCanvas\Plugin\Session\CustomerSessionContext" type="Aurigma\CustomersCanvas\Plugin\Session\CustomerSessionContext" sortOrder="15"/>
+    </type>
+
+    <type name="Magento\Sales\Cron\CleanExpiredQuotes">
+    	<plugin name="Aurigma\CustomersCanvas\Plugin\Cron\BufferCleaner" type="Aurigma\CustomersCanvas\Plugin\Cron\BufferCleaner" sortOrder="15"/>
+    </type>
+    
+    <type name="Magento\Csp\Model\Collector\CspWhitelistXmlCollector">
+        <plugin name="Aurigma\CustomersCanvas\Plugin\Csp\Csp" type="Aurigma\CustomersCanvas\Plugin\Csp\Csp" sortOrder="15" disabled="false"/>
+    </type>
+
+    <!-- Custom logger -->
+    <virtualType name="Aurigma\CustomersCanvas\Logger\CustomersCanvasLogger" type="Magento\Framework\Logger\Monolog">
+        <arguments>
+            <argument name="handlers" xsi:type="array">
+                <item name="debug" xsi:type="object">Aurigma\CustomersCanvas\Logger\Handler\CustomersCanvasDebug</item>
+                <item name="info" xsi:type="object">Aurigma\CustomersCanvas\Logger\Handler\CustomersCanvasInfo</item>
+                <item name="error" xsi:type="object">Aurigma\CustomersCanvas\Logger\Handler\CustomersCanvasError</item>
+            </argument>
+        </arguments>
+    </virtualType>
+
+    <!-- start: Set custom logger -->
+    <type name="Aurigma\CustomersCanvas\Controller\Adminhtml\Settings\Upload">
+        <arguments>
+            <argument name="logger" xsi:type="object">Aurigma\CustomersCanvas\Logger\CustomersCanvasLogger</argument>
+        </arguments>
+    </type>
+    <type name="Aurigma\CustomersCanvas\Setup\InstallData">
+        <arguments>
+            <argument name="logger" xsi:type="object">Aurigma\CustomersCanvas\Logger\CustomersCanvasLogger</argument>
+        </arguments>
+    </type>
+    <type name="Aurigma\CustomersCanvas\Setup\InstallSchema">
+        <arguments>
+            <argument name="logger" xsi:type="object">Aurigma\CustomersCanvas\Logger\CustomersCanvasLogger</argument>
+        </arguments>
+    </type>
+    <type name="Aurigma\CustomersCanvas\Setup\Uninstall">
+        <arguments>
+            <argument name="logger" xsi:type="object">Aurigma\CustomersCanvas\Logger\CustomersCanvasLogger</argument>
+        </arguments>
+    </type>
+    <type name="Aurigma\CustomersCanvas\Observer\Auth\CustomerLoginMerge">
+        <arguments>
+            <argument name="logger" xsi:type="object">Aurigma\CustomersCanvas\Logger\CustomersCanvasLogger</argument>
+        </arguments>
+    </type>
+    <type name="Aurigma\CustomersCanvas\Plugin\Session\CustomerSessionContext">
+        <arguments>
+            <argument name="logger" xsi:type="object">Aurigma\CustomersCanvas\Logger\CustomersCanvasLogger</argument>
+        </arguments>
+    </type>
+    <type name="Aurigma\CustomersCanvas\Api\PluginSettingsManager">
+        <arguments>
+            <argument name="logger" xsi:type="object">Aurigma\CustomersCanvas\Logger\CustomersCanvasLogger</argument>
+        </arguments>
+    </type>
+    <type name="Aurigma\CustomersCanvas\Api\StorefrontUsersService">
+        <arguments>
+            <argument name="logger" xsi:type="object">Aurigma\CustomersCanvas\Logger\CustomersCanvasLogger</argument>
+        </arguments>
+    </type>
+    <type name="Aurigma\CustomersCanvas\Helper\BackOfficeTokenHelper">
+        <arguments>
+            <argument name="logger" xsi:type="object">Aurigma\CustomersCanvas\Logger\CustomersCanvasLogger</argument>
+        </arguments>
+    </type>
+    <type name="Aurigma\CustomersCanvas\Cron\BufferCleaner">
+        <arguments>
+            <argument name="logger" xsi:type="object">Aurigma\CustomersCanvas\Logger\CustomersCanvasLogger</argument>
+        </arguments>
+    </type>
+    <type name="Aurigma\CustomersCanvas\Block\Frontend\Product\View\Editor">
+        <arguments>
+            <argument name="logger" xsi:type="object">Aurigma\CustomersCanvas\Logger\CustomersCanvasLogger</argument>
+        </arguments>
+    </type>
+    <type name="Aurigma\CustomersCanvas\Helper\PrivateDesignsHelper">
+        <arguments>
+            <argument name="logger" xsi:type="object">Aurigma\CustomersCanvas\Logger\CustomersCanvasLogger</argument>
+        </arguments>
+    </type>
+    <type name="Aurigma\CustomersCanvas\Plugin\Csp\Csp">
+        <arguments>
+            <argument name="logger" xsi:type="object">Aurigma\CustomersCanvas\Logger\CustomersCanvasLogger</argument>
+        </arguments>
+    </type>
+    <type name="Aurigma\CustomersCanvas\Controller\Cart\Add">
+        <arguments>
+            <argument name="logger" xsi:type="object">Aurigma\CustomersCanvas\Logger\CustomersCanvasLogger</argument>
+        </arguments>
+    </type>
+    <type name="Aurigma\CustomersCanvas\Plugin\Minicart\Image">
+        <arguments>
+            <argument name="logger" xsi:type="object">Aurigma\CustomersCanvas\Logger\CustomersCanvasLogger</argument>
+        </arguments>
+    </type>
+    <type name="Aurigma\CustomersCanvas\Plugin\CheckoutCart\Image">
+        <arguments>
+            <argument name="logger" xsi:type="object">Aurigma\CustomersCanvas\Logger\CustomersCanvasLogger</argument>
+        </arguments>
+    </type>
+    <type name="Aurigma\CustomersCanvas\Block\Frontend\CartItem\ReturnToEditLink">
+        <arguments>
+            <argument name="logger" xsi:type="object">Aurigma\CustomersCanvas\Logger\CustomersCanvasLogger</argument>
+        </arguments>
+    </type>
+    <type name="Aurigma\CustomersCanvas\Controller\Cart\Update">
+        <arguments>
+            <argument name="logger" xsi:type="object">Aurigma\CustomersCanvas\Logger\CustomersCanvasLogger</argument>
+        </arguments>
+    </type>
+    <type name="Aurigma\CustomersCanvas\Observer\Cart\CheckoutCartAdd">
+        <arguments>
+            <argument name="logger" xsi:type="object">Aurigma\CustomersCanvas\Logger\CustomersCanvasLogger</argument>
+        </arguments>
+    </type>
+    <type name="Aurigma\CustomersCanvas\Observer\Cart\CheckoutCartUpdate">
+        <arguments>
+            <argument name="logger" xsi:type="object">Aurigma\CustomersCanvas\Logger\CustomersCanvasLogger</argument>
+        </arguments>
+    </type>
+    <type name="Aurigma\CustomersCanvas\Observer\Order\SubmitOrder">
+        <arguments>
+            <argument name="logger" xsi:type="object">Aurigma\CustomersCanvas\Logger\CustomersCanvasLogger</argument>
+        </arguments>
+    </type>
+    <type name="Aurigma\CustomersCanvas\Observer\Order\SaveOrder">
+        <arguments>
+            <argument name="logger" xsi:type="object">Aurigma\CustomersCanvas\Logger\CustomersCanvasLogger</argument>
+        </arguments>
+    </type>
+    <type name="Aurigma\CustomersCanvas\Helper\ProjectsHelper">
+        <arguments>
+            <argument name="logger" xsi:type="object">Aurigma\CustomersCanvas\Logger\CustomersCanvasLogger</argument>
+        </arguments>
+    </type>
+    <!-- end: Set custom logger -->
+</config>

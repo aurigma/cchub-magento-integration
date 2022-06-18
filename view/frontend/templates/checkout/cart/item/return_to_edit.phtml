@@ -1,0 +1,5 @@
+<?php if ($block->isPersonalized()) { ?>
+<div>
+    <a id="return_to_edit_<?= $block->getItemId(); ?>" href="<?= $block->getReturnToEditLink(); ?>" ><?= __('Return to edit'); ?></a>
+</div>
+<?php } ?>
