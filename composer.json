@@ -1,8 +1,16 @@
 {
     "name": "aurigma/magento-customers-canvas",
     "description": "Enable online print product personalization for your Magento 2 storefront.",
+    "keywords": [
+        "customers canvas",
+        "web-to-print",
+        "magento plugin",
+        "rendering"
+    ],
     "type": "magento2-module",
-    "version": "0.0.2",
+    "version": "1.0.0",
+    "homepage": "https://customerscanvas.com",
+    "license": "proprietary",
     "authors": [
         {
             "name": "Aurigma Inc",
