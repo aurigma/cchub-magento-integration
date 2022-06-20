@@ -17,7 +17,6 @@
             "email": "info@aurigma.com"
         }
     ],
-    "minimum-stability": "stable",
     "require": {
         "php": "~7.3.0||~7.4.0",
         "aurigma/php-storefront-client": "^1.0",
