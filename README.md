@@ -8,7 +8,7 @@ This plugin supports Magento2 version
 # Installation
 You can install our plugin through Composer:
 ```
-composer require aurigma/magento_customers-canvas
+composer require aurigma/magento-customers-canvas
 php bin/magento module:enable Aurigma_CustomersCanvas
 php bin/magento setup:upgrade
 php bin/magento setup:static-content:deploy -f

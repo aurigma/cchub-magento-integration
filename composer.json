@@ -8,6 +8,7 @@
         "rendering"
     ],
     "type": "magento2-module",
+    "version": "1.0.2",
     "homepage": "https://customerscanvas.com",
     "license": "proprietary",
     "authors": [
