@@ -74,6 +74,7 @@ class Csp
         $defaultPolicies = array_merge($defaultPolicies, $this->addUrlToWhiteList('staticjs-aurigma.azureedge.net', $policyIds));
         $defaultPolicies = array_merge($defaultPolicies, $this->addUrlToWhiteList('cc-farm-dev.eastus.cloudapp.azure.com', $policyIds));
         $defaultPolicies = array_merge($defaultPolicies, $this->addUrlToWhiteList('cc-farm.aurigma.net', $policyIds));
+        $defaultPolicies = array_merge($defaultPolicies, $this->addUrlToWhiteList('cc-apps.aurigma.net', $policyIds));
 
         return $defaultPolicies;
     }
