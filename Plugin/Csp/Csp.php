@@ -47,8 +47,7 @@ class Csp
             'font-src',
             'default-src',
             'object-src',
-            'media-src',
-            'frame-ancestors'
+            'media-src'
         ];
 
         $url = $this->settings->getBackOfficeUrl();
@@ -75,6 +74,7 @@ class Csp
         $defaultPolicies = array_merge($defaultPolicies, $this->addUrlToWhiteList('cc-farm-dev.eastus.cloudapp.azure.com', $policyIds));
         $defaultPolicies = array_merge($defaultPolicies, $this->addUrlToWhiteList('cc-farm.aurigma.net', $policyIds));
         $defaultPolicies = array_merge($defaultPolicies, $this->addUrlToWhiteList('cc-apps.aurigma.net', $policyIds));
+        $defaultPolicies = array_merge($defaultPolicies, $this->addUrlToWhiteList('staticjs.blob.core.windows.net', $policyIds));
 
         return $defaultPolicies;
     }

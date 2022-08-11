@@ -44,7 +44,7 @@ class PluginSettingsManager {
             $settings->setBackOfficeClientId($this->scopeConfig->getValue($connectPath . PluginSettings::CLIENT_ID , $scopeType));
             $settings->setBackOfficeClientSecret($this->scopeConfig->getValue($connectPath . PluginSettings::CLIENT_SECRET , $scopeType));
 
-            $settings->setPopupMode($this->scopeConfig->getValue($editorPath . PluginSettings::POPUP_MODE , $scopeType));
+            $settings->setEditorMode($this->scopeConfig->getValue($editorPath . PluginSettings::EDITOR_MODE , $scopeType));
 
             return $settings;
 
@@ -74,7 +74,7 @@ class PluginSettingsManager {
             $this->configWriter->save($connectPath . PluginSettings::CLIENT_ID, $settings->getBackOfficeClientId(), $scopeType, $scopeId);
             $this->configWriter->save($connectPath . PluginSettings::CLIENT_SECRET, $settings->getBackOfficeClientSecret(), $scopeType, $scopeId);
 
-            $this->configWriter->save($editorPath . PluginSettings::POPUP_MODE, $settings->getPopupMode(), $scopeType, $scopeId);
+            $this->configWriter->save($editorPath . PluginSettings::EDITOR_MODE, $settings->getEditorMode(), $scopeType, $scopeId);
 
         } catch (\Throwable $e) {
 			$this->_logger->error(

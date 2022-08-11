@@ -3,7 +3,7 @@
     <default>
         <customers_canvas_settings>
             <editor>
-                <popup_mode>popup</popup_mode>
+                <editor_mode>popup</editor_mode>
             </editor>
         </customers_canvas_settings>
     </default>

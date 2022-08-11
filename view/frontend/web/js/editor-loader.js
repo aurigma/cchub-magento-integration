@@ -9,9 +9,9 @@ define([
     const queryHelper = queryHelperFactory();
     const editorHelper = editorHelperFactory();
 
-    async function restoreEditionOnce(ccInPageEditorMode, config) {
+    async function restoreEditionOnce(editorMode, config) {
         const queryParams = queryHelper.getQueryParameters();
-        await editorHelper.restoreEditionOnce(queryParams, ccInPageEditorMode, config);
+        await editorHelper.restoreEditionOnce(queryParams, editorMode, config);
         queryHelper.cleanUrl();
     }
 
@@ -22,17 +22,17 @@ define([
     var mageJsComponent = async function(config, node)
     {       
         window.__customersCanvas_stepInited = false;
-        $('#customers-canvas-editor-parent').on('stepInited', () => { 
+        $('#customers-canvas__editor-parent').on('stepInited', () => { 
             window.__customersCanvas_stepInited = true;
         });
 
-        const ccInPageEditorMode = !config.pluginSettings.popupMode;
+        const editorMode = config.pluginSettings.editorMode;
 
-        $('#customers-canvas-closebtn').click(() => 
+        $('#customers-canvas__close-btn').click(() => 
             { 
                 const result = window.confirm($.mage.__('When you close the window, all unsaved data will be lost!'));
                 if (result) {
-                    editorHelper.hideEditor(ccInPageEditorMode);
+                    editorHelper.hideEditor(editorMode);
                 }
             }
         );
@@ -46,7 +46,7 @@ define([
             }
     
             if (isRestored) {
-                restoreEditionOnce(ccInPageEditorMode, config);
+                restoreEditionOnce(editorMode, config);
             }
 
         });

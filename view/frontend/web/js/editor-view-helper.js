@@ -6,62 +6,98 @@ define(['jquery'], function($)
     {
         const helper = {
             hideLockShroud: function() {
-                $('#customers-canvas-shroud').hide();
+                $('#customers-canvas__shroud').hide();
             },
             showLockShroud: function() {
-                $('#customers-canvas-shroud').show();
+                $('#customers-canvas__shroud').show();
             },
-            showEditor: function(ccInPageEditorMode) {
+            showEditor: function(editorMode) {
                 this.hideLockShroud();
-                if (ccInPageEditorMode) {
-                    $('.product-info-main').hide();
-                    $('.product.media').hide();
-        
-                    $('#customers-canvas-container').css('position', 'static');
-                } else {
-                    if (window.auWizard && window.auWizard.scope.driver) {
-                        window.auWizard.showEditorPopup();
-                    } else {
-                        $('#customers-canvas-editor-parent').one('load', function() {
+
+                switch (editorMode) {
+                    case "popup":
+                        if (window.auWizard && window.auWizard.scope.driver) {
                             window.auWizard.showEditorPopup();
-                        });
-                    }
+                        } else {
+                            $('#customers-canvas__editor-parent').one('load', function() {
+                                window.auWizard.showEditorPopup();
+                            });
+                        }
+                        break;
+                    case "insidepage":
+                        $('.product-info-main').hide();
+                        $('.product.media').hide();
+                        $('#customers-canvas__container').css('display', 'block');
+                        $('#customers-canvas__editor-parent').css('height', '88vh');
+                        break;
+                    case "fullscreen":
+                        $('.product-info-main').hide();
+                        $('.product.media').hide();
+                        $('body').css('overflow', 'hidden');
+                        $('#customers-canvas__container').css('display', 'block');
+                        $('#customers-canvas__container').addClass('customers-canvas__page-filler');
+                        $('#customers-canvas__editor-parent').css('height', '100vh');
+                        break;
+                    default:
+                        if (window.auWizard && window.auWizard.scope.driver) {
+                            window.auWizard.showEditorPopup();
+                        } else {
+                            $('#customers-canvas__editor-parent').one('load', function() {
+                                window.auWizard.showEditorPopup();
+                            });
+                        }
+                        break;
                 }
             },
-            hideEditor: function(ccInPageEditorMode) {
-                if (ccInPageEditorMode) {
-                    $('#customers-canvas-container').css('position', 'fixed');
-                    $('.product-info-main').show();
-                    $('.product.media').show();
-                } else {
-                    auWizard.closeEditorPopup(true);
+            hideEditor: function (editorMode) {
+                
+                switch (editorMode) {
+                    case "popup":
+                        auWizard.closeEditorPopup(true);
+                        break;
+                    case "insidepage":
+                        $('#customers-canvas__container').css('display', 'none');
+                        $('.product-info-main').show();
+                        $('.product.media').show();
+                        break
+                    case "fullscreen":
+                        $('body').css('overflow', 'unset');
+                        $('#customers-canvas__container').css('display', 'none');
+                        $('#customers-canvas__container').removeClass('customers-canvas__page-filler');
+                        $('.product-info-main').show();
+                        $('.product.media').show();
+                        break
+                    default:
+                        auWizard.closeEditorPopup(true);
+                        break;
                 }
             },
             async loadEditor(formData, settings, restoreState, disableSubmitButton, activateSubmitButton, onRequestSuccessHandler, onRequestErrorHandler) {
-                const ccInPageEditorMode = !settings.pluginSettings.popupMode;
+                const editorMode = settings.pluginSettings.editorMode ?? "popup";
                 const self = this;
-                if (!ccInPageEditorMode) {
+                window.cc_formDataForDriver = formData;
+
+                if (editorMode === "popup") {
                     disableSubmitButton();
                 }
-                window.cc_formDataForDriver = formData;
-                await this.editorInitialization(settings, restoreState, formData, onRequestSuccessHandler, onRequestErrorHandler, ccInPageEditorMode);
-                
+
+                await this.editorInitialization(settings, restoreState, formData, onRequestSuccessHandler, onRequestErrorHandler, editorMode);
                 
                 if (window.__customersCanvas_stepInited) {
                     this.updateDriverQuantity(formData);
-                    this.showEditor(ccInPageEditorMode);
+                    this.showEditor(editorMode);
                     activateSubmitButton();
                 } else {
-                    $('#customers-canvas-editor-parent').one('stepInited', function() {
+                    $('#customers-canvas__editor-parent').one('stepInited', function() {
                         setTimeout(() => {
                             self.updateDriverQuantity(formData);
-                            self.showEditor(ccInPageEditorMode);
+                            self.showEditor(editorMode);
                             activateSubmitButton();
                         }, 0);
                     });
                 }
             },
-            async editorInitialization(settings, restoreState, formData, onRequestSuccessHandler, onRequestErrorHandler, ccInPageEditorMode) {
+            async editorInitialization(settings, restoreState, formData, onRequestSuccessHandler, onRequestErrorHandler, editorMode) {
                 const self = this;
                 const initData = await this.preloadEditor(settings);
 
@@ -69,7 +105,7 @@ define(['jquery'], function($)
                 const data = initData.data;
                 const userInfo = initData.userInfo;
         
-                const container = document.querySelector("#customers-canvas-editor-parent");
+                const container = document.querySelector("#customers-canvas__editor-parent");
         
                 const productModel = settings.productModel;
                 const orderRestoreData = !!restoreState ? restoreState : null;
@@ -87,11 +123,11 @@ define(['jquery'], function($)
                         } else {
                             onRequestSuccessHandler(data.response);
                         }
-                        self.hideEditor(ccInPageEditorMode);
+                        self.hideEditor(editorMode);
                     });     
                 }
             },
-            async restoreEditionOnce(queryParams, ccInPageEditorMode, settings) {
+            async restoreEditionOnce(queryParams, editorMode, settings) {
 
                 const formDataArray = this.getFormDataFromParamsObj(queryParams);
                 const restoreState = this.getRestoreDataFromParamsObj(queryParams);
@@ -108,9 +144,9 @@ define(['jquery'], function($)
                     () => {}, 
                     (res) => { console.log(res) }, 
                     (res) => { console.log(res) }, 
-                    ccInPageEditorMode, 
+                    editorMode, 
                     true); // always goes to cart
-                this.showEditor(ccInPageEditorMode);
+                this.showEditor(editorMode);
             },
             updateDriverQuantity(formData) {
                 let driver = window.auWizard.scope.driver;
@@ -202,13 +238,11 @@ define(['jquery'], function($)
         
                 
                 const data = await storefront.templates.findByProduct(settings.productModel.id);
-                if (settings.pluginSettings.popupMode) {
+                if (settings.pluginSettings.editorMode === "popup") {
                     const config = JSON.parse(data.config);
                     config.displayInPopup = true;
                     data.config = JSON.stringify(config);
                 }
-
-                //data.uiFrameworkUrl = "http://localhost/uif/editor";
         
                 return { storefront: storefront, data: data, userInfo: userInfo, pluginSettings: settings.pluginSettings };
             },

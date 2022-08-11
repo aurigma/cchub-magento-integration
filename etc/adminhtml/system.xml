@@ -52,7 +52,7 @@
             <group id="editor" translate="label comment" type="text" sortOrder="10" showInDefault="1" showInWebsite="1" showInStore="1">
                 <label>Editor view</label>
                 <attribute type="expanded">1</attribute>
-                <field id="popup_mode" translate="label" type="select" sortOrder="1" showInDefault="1" showInWebsite="1" showInStore="1">
+                <field id="editor_mode" translate="label" type="select" sortOrder="1" showInDefault="1" showInWebsite="1" showInStore="1">
                     <label>Open editor in</label>
                     <source_model>Aurigma\CustomersCanvas\Model\Config\Source\EditorMode</source_model>
                 </field>

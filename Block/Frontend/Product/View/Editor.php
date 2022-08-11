@@ -209,7 +209,15 @@ class Editor extends Template
      */
     public function isPopupMode()
     {
-        return $this->settings->getPopupMode() == EditorMode::POPUP_VALUE;
+        return $this->settings->getEditorMode() == EditorMode::POPUP_VALUE;
+    }
+
+    /**
+     * @return string
+     */
+    public function getEditorMode()
+    {
+       return $this->settings->getEditorMode();
     }
 
     /**

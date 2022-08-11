@@ -17,7 +17,7 @@ class PluginSettings {
     const CLIENT_ID = 'clientid';
     const CLIENT_SECRET = 'client_secret';
 
-    const POPUP_MODE = 'popup_mode';
+    const EDITOR_MODE = 'editor_mode';
 
     private $backOfficeUrl;
     private $assetStorageUrl;
@@ -27,7 +27,7 @@ class PluginSettings {
     private $backOfficeStorefrontId;
     private $backOfficeClientId;
     private $backOfficeClientSecret;
-    private $popupMode;
+    private $editorMode;
 
     public function setBackOfficeUrl($value) 
     {
@@ -101,13 +101,13 @@ class PluginSettings {
         return $this->backOfficeClientSecret;
     }
 
-    public function setPopupMode($value)
+    public function setEditorMode($value)
     {
-        $this->popupMode = $value;
+        $this->editorMode = $value;
     }
-    public function getPopupMode()
+    public function getEditorMode()
     {
-        return $this->popupMode;
+        return $this->editorMode;
     }
 
 }

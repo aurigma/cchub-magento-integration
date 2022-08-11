@@ -1,74 +1,29 @@
 <?php if ($block->isProductIntegrated()) { ?>
-<div id="customers-canvas-content">
-    <div id="customers-canvas-container">
-        <div id="customers-canvas-editor-parent">
-            <?= json_encode($block->isProductIntegrated()); ?>
-        </div>
+    <div id="customers-canvas__container">
 
         <?php if (!$block->isPopupMode()) { ?>
-            <div id="closebtn-wrapper">
-                <span class="customers-canvas-closebtn" id="customers-canvas-closebtn">
-                    &#706; <?= __('Back to product'); ?>
-                </span>
-            </div>
+            <span class="customers-canvas__close-btn" id="customers-canvas__close-btn">
+                &#706; <?= __('Back to product'); ?>
+            </span>
         <?php } ?>
-    </div>
-</div>
-<div id="customers-canvas-shroud">
-    <img class="customers-canvas-page-spinner" src="<?= $this->getViewFileUrl('Aurigma_CustomersCanvas::images/spinner-load.png'); ?>" alt="spinner" />
-</div>
 
-<script type="text/x-magento-init">
-    {
-        "*": {
-            "Aurigma_CustomersCanvas/js/editor-view-helper": {},
-            "Aurigma_CustomersCanvas/js/query-string-helper": {}
-        },
-        ".column.main": {
-            "Aurigma_CustomersCanvas/js/editor-loader": {
-                "pluginSettings": {
-                    "customersCanvasBaseUrl": <?= json_encode($block->getBackOfficeUrl()); ?>,
-                    "assetStorageUrl": <?= json_encode($block->getAssetStorageUrl()); ?>,
-                    "assetProcessorUrl": <?= json_encode($block->getAssetProcessorUrl()); ?>,
-                    "magentoBaseUrl": <?= json_encode($block->getBaseUrl()); ?>,
-                    "language": <?= json_encode($block->getLanguage()); ?>,
-                    "currency": <?= json_encode($block->getCurrency()); ?>,
-                    "ecommerceSystemType": <?= json_encode($block->getEcommerceSystemType()); ?>,
-                    "addToCartUrl": <?= json_encode($block->getAddToCartUrl()); ?>,
-                    "addToCartUpdateUrl": <?= json_encode($block->getAddToCartUpdateUrl()); ?>,
-                    "updatePriceUrl": <?= json_encode($block->getUpdatePriceUrl()); ?>,
-                    "popupMode": <?= json_encode($block->isPopupMode()); ?>,
-                    "redirectToCartAfterAdd": <?= json_encode($block->isRedirectToCartEnabled()); ?>
-                },
-                "userInfo": {
-                    "id": <?= json_encode($block->getModifyCustomerId()); ?>,
-                    "data": {
-                        <?php if ($block->isLoggedIn()): ?>
-                            "Your Name": <?= json_encode($block->getCustomerName()); ?>,
-                            "Email": <?= json_encode($block->getCustomerEmail()); ?>
-                        <?php endif; ?>
-                    }
-                },
-                "commonSettings": {
-                    "tenantId": <?= json_encode($block->getTenantId()); ?>,
-                    "projectOptionKey": <?= json_encode($block->getProjectOptionKey()); ?>,
-                    "isLoggedIn": <?= json_encode($block->isLoggedIn()); ?>
-                },
-                "productModel": {
-                    "id": <?= json_encode($block->getProductId()); ?>,
-                    "sku": <?= json_encode($block->getProductSku()); ?>,
-                    "name": <?= json_encode($block->getProductName()); ?>,
-                    "price": <?= json_encode($block->getProductPrice()); ?>,
-                    "type_id": <?= json_encode($block->getProductType()); ?>,
-                    "options": <?= json_encode($block->getProductOptions()); ?>,
-                    "custom_attributes": <?= json_encode($block->getProductAttributes()); ?>
-                }
-            }
-        },
-        "#product_addtocart_form": {
-            "catalogAddToCart": {
-                "bindSubmit": false,
-                "customersCanvas": {
+        <div id="customers-canvas__editor-parent">
+            <?= json_encode($block->isProductIntegrated()); ?>
+        </div>
+    </div>
+
+    <div id="customers-canvas__shroud">
+        <img class="customers-canvas__page-spinner" src="<?= $this->getViewFileUrl('Aurigma_CustomersCanvas::images/spinner-load.png'); ?>" alt="spinner" />
+    </div>
+
+    <script type="text/x-magento-init">
+        {
+            "*": {
+                "Aurigma_CustomersCanvas/js/editor-view-helper": {},
+                "Aurigma_CustomersCanvas/js/query-string-helper": {}
+            },
+            "#customers-canvas__editor-parent": {
+                "Aurigma_CustomersCanvas/js/editor-loader": {
                     "pluginSettings": {
                         "customersCanvasBaseUrl": <?= json_encode($block->getBackOfficeUrl()); ?>,
                         "assetStorageUrl": <?= json_encode($block->getAssetStorageUrl()); ?>,
@@ -80,7 +35,7 @@
                         "addToCartUrl": <?= json_encode($block->getAddToCartUrl()); ?>,
                         "addToCartUpdateUrl": <?= json_encode($block->getAddToCartUpdateUrl()); ?>,
                         "updatePriceUrl": <?= json_encode($block->getUpdatePriceUrl()); ?>,
-                        "popupMode": <?= json_encode($block->isPopupMode()); ?>,
+                        "editorMode": <?= json_encode($block->getEditorMode()); ?>,
                         "redirectToCartAfterAdd": <?= json_encode($block->isRedirectToCartEnabled()); ?>
                     },
                     "userInfo": {
@@ -107,9 +62,52 @@
                         "custom_attributes": <?= json_encode($block->getProductAttributes()); ?>
                     }
                 }
+            },
+            "#product_addtocart_form": {
+                "catalogAddToCart": {
+                    "bindSubmit": false,
+                    "customersCanvas": {
+                        "pluginSettings": {
+                            "customersCanvasBaseUrl": <?= json_encode($block->getBackOfficeUrl()); ?>,
+                            "assetStorageUrl": <?= json_encode($block->getAssetStorageUrl()); ?>,
+                            "assetProcessorUrl": <?= json_encode($block->getAssetProcessorUrl()); ?>,
+                            "magentoBaseUrl": <?= json_encode($block->getBaseUrl()); ?>,
+                            "language": <?= json_encode($block->getLanguage()); ?>,
+                            "currency": <?= json_encode($block->getCurrency()); ?>,
+                            "ecommerceSystemType": <?= json_encode($block->getEcommerceSystemType()); ?>,
+                            "addToCartUrl": <?= json_encode($block->getAddToCartUrl()); ?>,
+                            "addToCartUpdateUrl": <?= json_encode($block->getAddToCartUpdateUrl()); ?>,
+                            "updatePriceUrl": <?= json_encode($block->getUpdatePriceUrl()); ?>,
+                            "editorMode": <?= json_encode($block->getEditorMode()); ?>,
+                            "redirectToCartAfterAdd": <?= json_encode($block->isRedirectToCartEnabled()); ?>
+                        },
+                        "userInfo": {
+                            "id": <?= json_encode($block->getModifyCustomerId()); ?>,
+                            "data": {
+                                <?php if ($block->isLoggedIn()): ?>
+                                    "Your Name": <?= json_encode($block->getCustomerName()); ?>,
+                                    "Email": <?= json_encode($block->getCustomerEmail()); ?>
+                                <?php endif; ?>
+                            }
+                        },
+                        "commonSettings": {
+                            "tenantId": <?= json_encode($block->getTenantId()); ?>,
+                            "projectOptionKey": <?= json_encode($block->getProjectOptionKey()); ?>,
+                            "isLoggedIn": <?= json_encode($block->isLoggedIn()); ?>
+                        },
+                        "productModel": {
+                            "id": <?= json_encode($block->getProductId()); ?>,
+                            "sku": <?= json_encode($block->getProductSku()); ?>,
+                            "name": <?= json_encode($block->getProductName()); ?>,
+                            "price": <?= json_encode($block->getProductPrice()); ?>,
+                            "type_id": <?= json_encode($block->getProductType()); ?>,
+                            "options": <?= json_encode($block->getProductOptions()); ?>,
+                            "custom_attributes": <?= json_encode($block->getProductAttributes()); ?>
+                        }
+                    }
+                }
             }
-        }
-    }        
-</script>
+        }        
+    </script>
 
 <?php } ?>
