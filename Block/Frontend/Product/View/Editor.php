@@ -255,6 +255,14 @@ class Editor extends Template
     /**
      * @return string
      */
+    public function getStorefrontId()
+    {
+        return $this->settings->getBackOfficeStorefrontId();
+    }
+
+    /**
+     * @return string
+     */
     public function getBaseUrl()
     {
         return $this->storeManager->getStore()->getBaseUrl();

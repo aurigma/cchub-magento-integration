@@ -76,6 +76,10 @@ class Csp
         $defaultPolicies = array_merge($defaultPolicies, $this->addUrlToWhiteList('cc-apps.aurigma.net', $policyIds));
         $defaultPolicies = array_merge($defaultPolicies, $this->addUrlToWhiteList('staticjs.blob.core.windows.net', $policyIds));
 
+        $defaultPolicies = array_merge($defaultPolicies, $this->addUrlToWhiteList('api.customerscanvashub.com', $policyIds));
+        $defaultPolicies = array_merge($defaultPolicies, $this->addUrlToWhiteList('apigateway-devenv.azurewebsites.net', $policyIds));
+        $defaultPolicies = array_merge($defaultPolicies, $this->addUrlToWhiteList('apigateway-qaenv.azurewebsites.net', $policyIds));
+
         return $defaultPolicies;
     }
 

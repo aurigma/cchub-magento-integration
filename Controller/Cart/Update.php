@@ -6,6 +6,7 @@ use \Magento\Framework\App\Action\HttpPostActionInterface as HttpPostActionInter
 use \Magento\Checkout\Controller\Cart as CartController;
 use \Magento\Checkout\Model\Cart as CustomerCart;
 use \Magento\Framework\Data\Form\FormKey\Validator;
+use \Magento\Catalog\Api\ProductRepositoryInterface;
 use \Magento\Store\Model\StoreManagerInterface;
 use \Magento\Checkout\Model\Session;
 use \Magento\Framework\App\Config\ScopeConfigInterface;
@@ -16,11 +17,16 @@ use \Magento\Framework\Exception\LocalizedException;
 use \Magento\Framework\DataObject;
 use \Magento\Framework\Escaper;
 use \Psr\Log\LoggerInterface;
+use \Magento\Framework\Exception\NoSuchEntityException;
 
 use Aurigma\CustomersCanvas\Observer\Cart\CheckoutCartAdd;
 
 class Update extends CartController implements HttpPostActionInterface
 {
+    /**
+     * @var ProductRepositoryInterface
+     */
+    protected $productRepository;
 
     /**
      * @var LoggerInterface
@@ -43,6 +49,7 @@ class Update extends CartController implements HttpPostActionInterface
         StoreManagerInterface $storeManager,
         Validator $formKeyValidator,
         CustomerCart $cart,
+        ProductRepositoryInterface $productRepository,
         LoggerInterface $logger
     ) {
         parent::__construct(
@@ -53,6 +60,7 @@ class Update extends CartController implements HttpPostActionInterface
             $formKeyValidator,
             $cart
         );
+        $this->productRepository = $productRepository;
         $this->_logger = $logger;
     }
 
@@ -169,12 +177,35 @@ class Update extends CartController implements HttpPostActionInterface
             }
         }
 
-        if (isset($params['productId'])) {
-            $result['product'] = $params['productId'];
-            $result['item'] = $params['productId'];
+        $productId = $this->getRealProductId($params);
+        if ($productId) {
+            $result['product'] = $productId;
+            $result['item'] = $productId;
         }
 
         return $result;
+    }
+
+    private function getRealProductId($params)
+    {
+        $productId = null;
+        if (isset($params['productId'])) {
+            $productId = $params['productId'];
+        }
+
+        if (isset($params['optionBasedProductSku']) && $params['optionBasedProductSku'] !== '') {
+            $storeId = $this->_storeManager->getStore()->getId();
+            try {
+                $product = $this->productRepository->get($params['optionBasedProductSku'], false, $storeId);
+
+                if ($product) {
+                    $productId = $product->getId();
+                }
+            } catch (NoSuchEntityException $e) {
+                return false;
+            }
+        }
+        return $productId;
     }
 }
 

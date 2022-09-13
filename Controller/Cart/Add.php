@@ -69,11 +69,12 @@ class Add extends CartController implements HttpPostActionInterface
      *
      * @return \Magento\Catalog\Model\Product|false
      */
-    protected function _initProduct()
+    protected function _initProduct($productId)
     {
-        $productId = (int) $this->getRequest()->getParam('productId');
+        $productId = (int) $productId;
         if ($productId) {
-            $storeId = $this->_objectManager->get(StoreManagerInterface::class)->getStore()->getId();
+            // $storeId = $this->_objectManager->get(StoreManagerInterface::class)->getStore()->getId();
+            $storeId = $this->_storeManager->getStore()->getId();
             try {
                 return $this->productRepository->getById($productId, false, $storeId);
             } catch (NoSuchEntityException $e) {
@@ -102,7 +103,7 @@ class Add extends CartController implements HttpPostActionInterface
         try {
             
             $productParams = $this->getProductParamsFromRequest($params);
-            $product = $this->_initProduct();
+            $product = $this->_initProduct($productParams['product']);
             $related = $this->getRequest()->getParam('related_product');
             /** Check product availability */
             if (!$product) {
@@ -206,12 +207,35 @@ class Add extends CartController implements HttpPostActionInterface
             }
         }
 
-        if (isset($params['productId'])) {
-            $result['product'] = $params['productId'];
-            $result['item'] = $params['productId'];
+        $productId = $this->getRealProductId($params);
+        if ($productId) {
+            $result['product'] = $productId;
+            $result['item'] = $productId;
         }
 
         return $result;
+    }
+
+    private function getRealProductId($params)
+    {
+        $productId = null;
+        if (isset($params['productId'])) {
+            $productId = $params['productId'];
+        }
+
+        if (isset($params['optionBasedProductSku']) && $params['optionBasedProductSku'] !== '') {
+            $storeId = $this->_storeManager->getStore()->getId();
+            try {
+                $product = $this->productRepository->get($params['optionBasedProductSku'], false, $storeId);
+
+                if ($product) {
+                    $productId = $product->getId();
+                }
+            } catch (NoSuchEntityException $e) {
+                return false;
+            }
+        }
+        return $productId;
     }
 
     /**

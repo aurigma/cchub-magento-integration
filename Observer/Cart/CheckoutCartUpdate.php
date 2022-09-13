@@ -75,6 +75,14 @@ class CheckoutCartUpdate implements ObserverInterface
                 'value' => $newGuid
             ));
 
+            if ($this->isOptionBasedProduct($post)) {
+                $item->addOption(array(
+                    'product_id' => $item->getProductId(),
+                    'code' => CheckoutCartAdd::ORIGINAL_PRODUCT_NAME,
+                    'value' => $post->productId
+                ));
+            }
+
         } catch (\Throwable $e) {
 			$this->_logger->error(
                 'Error when adding project key option to cart item. '. PHP_EOL . $e->getMessage() . PHP_EOL . $e->getTraceAsString(), 
@@ -96,6 +104,11 @@ class CheckoutCartUpdate implements ObserverInterface
         } else {
             $this->_logger->info('Project with key: ' . $projectKeyOption->getValue() . ' was not found in db.' , $this->getLogContext(__METHOD__));
         }
+    }
+
+    private function isOptionBasedProduct($post)
+    {
+        return isset($post->optionBasedProductSku) && $post->optionBasedProductSku !== '';
     }
 
     private function getLogContext(string $methodName) 

@@ -2,8 +2,10 @@
 
 namespace Aurigma\CustomersCanvas\Block\Frontend\CartItem;
 
+use \Magento\Catalog\Api\ProductRepositoryInterface;
 use \Magento\Framework\View\Element\Template;
 use \Magento\Framework\View\Element\Template\Context;
+use \Magento\Store\Model\StoreManagerInterface;
 use \Psr\Log\LoggerInterface;
 
 use Aurigma\CustomersCanvas\Model\BackofficeProjectFactory;
@@ -17,6 +19,8 @@ class ReturnToEditLink extends Template
 {
     protected $backOfficeProjectFactory;
     protected $projectHelper;
+    protected $productRepository;
+    protected $storeManager;
 
     protected $_logger;
 
@@ -28,11 +32,15 @@ class ReturnToEditLink extends Template
         Context $context, 
         BackofficeProjectFactory $backOfficeProjectFactory,
         BackOfficeProjectHelper $projectHelper,
+        ProductRepositoryInterface $productRepository,
+        StoreManagerInterface $storeManager,
         LoggerInterface $logger, 
         array $data = []) 
     {
         $this->backOfficeProjectFactory = $backOfficeProjectFactory;
         $this->projectHelper = $projectHelper;
+        $this->productRepository = $productRepository;
+        $this->storeManager = $storeManager;
 
         $this->_logger = $logger;
         parent::__construct($context, $data);
@@ -65,6 +73,17 @@ class ReturnToEditLink extends Template
         }
     }
 
+    public function isOptionBasedProduct()
+    {
+        $item = $this->getItem();
+        $itemOption = $item->getOptionByCode(CheckoutCartAdd::ORIGINAL_PRODUCT_NAME);
+        if (!empty($itemOption)) {
+            return true;
+        } else {
+            return false;
+        }
+    }
+
     /**
      * @return additional information data
      */
@@ -87,10 +106,27 @@ class ReturnToEditLink extends Template
         $resultLink = '';
         $item = $this->getItem();
         $product = $item->getProduct();
-        $resultLink = $product->getProductUrl();
+        $resultLink = $this->getProductUrl($product);
         $queryArray = $this->getQueryArrayForItem($item);
 
         return $resultLink . '?' . http_build_query($queryArray);
+    }
+
+    private function getProductUrl($product): string
+    {
+        $resultLink = $product->getProductUrl();
+        if ($this->isOptionBasedProduct())
+        {
+            $item = $this->getItem();
+            $itemOption = $item->getOptionByCode(CheckoutCartAdd::ORIGINAL_PRODUCT_NAME);
+            $originalProductId = $itemOption->getValue();
+
+            $storeId = $this->storeManager->getStore()->getId();
+            $originalProduct = $this->productRepository->getById($originalProductId, false, $storeId);
+
+            $resultLink = $originalProduct->getProductUrl();
+        }
+        return $resultLink;
     }
 
     private function getQueryArrayForItem($item)

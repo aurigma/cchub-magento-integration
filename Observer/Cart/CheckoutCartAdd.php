@@ -16,6 +16,7 @@ use Aurigma\CustomersCanvas\Model\BackofficeProjectFactory;
 class CheckoutCartAdd implements ObserverInterface
 {
     const BACKOFFICE_OPTION_NAME = 'customers_canvas_project_key';
+    const ORIGINAL_PRODUCT_NAME = 'customers_canvas_original_product_key';
 
     protected $layout;
     protected $storeManager;
@@ -70,6 +71,14 @@ class CheckoutCartAdd implements ObserverInterface
                 'value' => $newGuid
             ));
 
+            if ($this->isOptionBasedProduct($post)) {
+                $item->addOption(array(
+                    'product_id' => $item->getProductId(),
+                    'code' => CheckoutCartAdd::ORIGINAL_PRODUCT_NAME,
+                    'value' => $post->productId
+                ));
+            }
+
         } catch (\Throwable $e) {
 			$this->_logger->error(
                 'Error when adding project key option to cart item. '. PHP_EOL . $e->getMessage() . PHP_EOL . $e->getTraceAsString(), 
@@ -82,6 +91,11 @@ class CheckoutCartAdd implements ObserverInterface
     private function getLogContext(string $methodName) 
     {
         return array('class' => get_class($this), 'method' => $methodName);
+    }
+
+    private function isOptionBasedProduct($post)
+    {
+        return isset($post->optionBasedProductSku) && $post->optionBasedProductSku !== '';
     }
 }
 

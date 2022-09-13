@@ -72,7 +72,7 @@ class SubmitOrder implements ObserverInterface
             }
         } catch (\Throwable $e) {
 			$this->_logger->error(
-                'Error when adding project key option to cart item. '. PHP_EOL . $e->getMessage() . PHP_EOL . $e->getTraceAsString(), 
+                'Error when processing quote order item. '. PHP_EOL . $e->getMessage() . PHP_EOL . $e->getTraceAsString(), 
                 $this->getLogContext(__METHOD__)
             );
             throw $e;
@@ -94,12 +94,13 @@ class SubmitOrder implements ObserverInterface
                 $backOfficeProject->setProperties($this->setRegularUser($backOfficeProject->getProperties(), $userId));
             }
 
+            $submitProductId = $this->getProductIdForbackOffice($quoteItem);
             $createdProject = $this->projectHelper->createProject(
                 $backOfficeProject, 
                 $userId, 
                 $customerNiceName ?? $userId, 
                 $order->getId(), 
-                $quoteItem->getProductId(), 
+                $submitProductId, 
                 $quoteItem->getName(),
                 $this->backendUrl->getUrl('sales/order/view/order_id/' . $order->getId(), [])
             );
@@ -121,6 +122,25 @@ class SubmitOrder implements ObserverInterface
 
             $this->projectHelper->changeProjectStatus($createdProject['id'], 3); // 3 - active
         }
+    }
+
+    private function getProductIdForbackOffice($quoteItem)
+    {
+        $productId = $quoteItem->getProductId();
+
+        $itemOption = $quoteItem->getOptionByCode(CheckoutCartAdd::ORIGINAL_PRODUCT_NAME);
+        if (!$itemOption) {
+            return $productId;
+        }
+        $originalProductId = $itemOption->getValue();
+
+        if (!$originalProductId || $originalProductId === '') {
+            return $productId;
+        } else {
+            $productId = (int) $originalProductId;
+        }
+
+        return $productId;
     }
 
     private function getOrderItemForQuoteId($quoteItemId, $order)

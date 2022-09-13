@@ -50,7 +50,8 @@
                     "commonSettings": {
                         "tenantId": <?= json_encode($block->getTenantId()); ?>,
                         "projectOptionKey": <?= json_encode($block->getProjectOptionKey()); ?>,
-                        "isLoggedIn": <?= json_encode($block->isLoggedIn()); ?>
+                        "isLoggedIn": <?= json_encode($block->isLoggedIn()); ?>,
+                        "storefrontId": <?= json_encode($block->getStorefrontId()); ?>
                     },
                     "productModel": {
                         "id": <?= json_encode($block->getProductId()); ?>,
@@ -93,7 +94,8 @@
                         "commonSettings": {
                             "tenantId": <?= json_encode($block->getTenantId()); ?>,
                             "projectOptionKey": <?= json_encode($block->getProjectOptionKey()); ?>,
-                            "isLoggedIn": <?= json_encode($block->isLoggedIn()); ?>
+                            "isLoggedIn": <?= json_encode($block->isLoggedIn()); ?>,
+                            "storefrontId": <?= json_encode($block->getStorefrontId()); ?>
                         },
                         "productModel": {
                             "id": <?= json_encode($block->getProductId()); ?>,

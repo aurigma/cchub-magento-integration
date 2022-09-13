@@ -119,7 +119,7 @@ define(['jquery'], function($)
                 if (driver) {
                     driver.orders.current.onSubmitted.subscribe(async function (order, data) {
                         if (data.err) {
-                            onRequestErrorHandler(data.response)
+                            onRequestErrorHandler(data.response);
                         } else {
                             onRequestSuccessHandler(data.response);
                         }
@@ -233,7 +233,8 @@ define(['jquery'], function($)
                 const storefront = new Aurigma.BackOffice({
                     tenantId: settings.commonSettings.tenantId,
                     backOfficeUrl: settings.pluginSettings.customersCanvasBaseUrl,
-                    pluginSettings: settings.pluginSettings
+                    pluginSettings: settings.pluginSettings,
+                    ecommerceSystemId: settings.commonSettings.storefrontId,
                 });
         
                 
