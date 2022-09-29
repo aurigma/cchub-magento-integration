@@ -37,6 +37,12 @@ class Csp
      */
     public function afterCollect(CspWhitelistXmlCollector $cspWhitelistXmlCollector, $defaultPolicies = []): array
     {
+
+        $url = $this->settings->getBackOfficeUrl();
+        if (!isset($url) || $url === null || $url === '') {
+            return $defaultPolicies;
+        }
+
         $policyIds = [
             'connect-src',
             'script-src',
@@ -50,7 +56,6 @@ class Csp
             'media-src'
         ];
 
-        $url = $this->settings->getBackOfficeUrl();
         $parsed = parse_url($url);
         if (isset($parsed) && isset($parsed['host'])) {
             $defaultPolicies = array_merge($defaultPolicies, $this->addUrlToWhiteList($parsed['host'], $policyIds));
@@ -75,10 +80,17 @@ class Csp
         $defaultPolicies = array_merge($defaultPolicies, $this->addUrlToWhiteList('cc-farm.aurigma.net', $policyIds));
         $defaultPolicies = array_merge($defaultPolicies, $this->addUrlToWhiteList('cc-apps.aurigma.net', $policyIds));
         $defaultPolicies = array_merge($defaultPolicies, $this->addUrlToWhiteList('staticjs.blob.core.windows.net', $policyIds));
+        $defaultPolicies = array_merge($defaultPolicies, $this->addUrlToWhiteList('cc-apps-eu.aurigma.net', $policyIds));
 
         $defaultPolicies = array_merge($defaultPolicies, $this->addUrlToWhiteList('api.customerscanvashub.com', $policyIds));
         $defaultPolicies = array_merge($defaultPolicies, $this->addUrlToWhiteList('apigateway-devenv.azurewebsites.net', $policyIds));
         $defaultPolicies = array_merge($defaultPolicies, $this->addUrlToWhiteList('apigateway-qaenv.azurewebsites.net', $policyIds));
+        $defaultPolicies = array_merge($defaultPolicies, $this->addUrlToWhiteList('eu.customerscanvashub.com', $policyIds));
+        $defaultPolicies = array_merge($defaultPolicies, $this->addUrlToWhiteList('api.eu.customerscanvashub.com', $policyIds));
+
+        $defaultPolicies = array_merge($defaultPolicies, $this->addUrlToWhiteList('dm-designatomsapi.azurewebsites.net', $policyIds));
+        $defaultPolicies = array_merge($defaultPolicies, $this->addUrlToWhiteList('dm-designatomsapi-qaenv.azurewebsites.net', $policyIds));
+        $defaultPolicies = array_merge($defaultPolicies, $this->addUrlToWhiteList('dm-designatomsapi-devenv.azurewebsites.net', $policyIds));
 
         return $defaultPolicies;
     }
@@ -105,7 +117,8 @@ class Csp
             );
         }
 
-        $this->_logger->debug("Policy CSP for host($host) was edded.");
+        // writes too many logs
+        // $this->_logger->debug("Policy CSP for host($host) was added.");
 
         return $result;
     }

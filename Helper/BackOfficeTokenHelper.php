@@ -36,13 +36,18 @@ class BackOfficeTokenHelper extends AbstractHelper
     {
         try {
             return $this->oidc->requestClientCredentialsToken()->access_token;
-        } catch (\Throwable $ex) {
+        } catch (\Throwable $e) {
             $this->_logger->error(
                 'Back office token not gotten. '. PHP_EOL . $e->getMessage() . PHP_EOL . $e->getTraceAsString(), 
                 $this->getLogContext(__METHOD__)
             );
-            throw $ex;
+            throw $e;
         }
+    }
+
+    private function getLogContext(string $methodName) 
+    {
+        return array('class' => get_class($this), 'method' => $methodName);
     }
 }
 
