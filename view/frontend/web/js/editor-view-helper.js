@@ -80,21 +80,50 @@ define(['jquery'], function($)
                 if (editorMode === "popup") {
                     disableSubmitButton();
                 }
-
+                
                 await this.editorInitialization(settings, restoreState, formData, onRequestSuccessHandler, onRequestErrorHandler, editorMode);
                 
                 if (window.__customersCanvas_stepInited) {
                     this.updateDriverQuantity(formData);
                     this.showEditor(editorMode);
                     activateSubmitButton();
-                } else {
+                } else {    
+                    self.mazillaDisplayFix1(editorMode);
                     $('#customers-canvas__editor-parent').one('stepInited', function() {
                         setTimeout(() => {
                             self.updateDriverQuantity(formData);
                             self.showEditor(editorMode);
                             activateSubmitButton();
+                            self.mazillaDisplayFix2(editorMode);
                         }, 0);
                     });
+                }
+            },
+            mazillaDisplayFix1(editorMode) {
+                console.log('Mazilla fix1');
+                $('#customers-canvas__container').css('display', 'block');
+                $('#customers-canvas__container').css('width', '0px');
+                $('#customers-canvas__container').css('height', '0px');
+                $('#customers-canvas__container').css('overflow', 'hidden');
+
+                if (editorMode === "popup") {
+                    $('#au-popup-main-popup').css('display', 'block');
+                    $('#au-popup-main-popup').css('width', '0px');
+                    $('#au-popup-main-popup').css('height', '0px');
+                    $('#au-popup-main-popup').css('overflow', 'hidden');
+                }
+            },
+            mazillaDisplayFix2(editorMode) {
+                console.log('Mazilla fix2');
+                $('#customers-canvas__container').css('width', 'auto');
+                $('#customers-canvas__container').css('height', 'auto');
+                $('#customers-canvas__container').css('overflow', 'auto');
+
+                if (editorMode === "popup") {
+                    $('#au-popup-main-popup').css('width', '100vw');
+                    $('#au-popup-main-popup').css('height', '100vh');
+                    $('#au-popup-main-popup').css('overflow-x', 'inherit');
+                    $('#au-popup-main-popup').css('overflow-y', 'auto');
                 }
             },
             async editorInitialization(settings, restoreState, formData, onRequestSuccessHandler, onRequestErrorHandler, editorMode) {
