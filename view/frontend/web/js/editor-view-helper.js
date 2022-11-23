@@ -100,7 +100,6 @@ define(['jquery'], function($)
                 }
             },
             mazillaDisplayFix1(editorMode) {
-                console.log('Mazilla fix1');
                 $('#customers-canvas__container').css('display', 'block');
                 $('#customers-canvas__container').css('width', '0px');
                 $('#customers-canvas__container').css('height', '0px');
@@ -114,7 +113,6 @@ define(['jquery'], function($)
                 }
             },
             mazillaDisplayFix2(editorMode) {
-                console.log('Mazilla fix2');
                 $('#customers-canvas__container').css('width', 'auto');
                 $('#customers-canvas__container').css('height', 'auto');
                 $('#customers-canvas__container').css('overflow', 'auto');
@@ -182,6 +180,7 @@ define(['jquery'], function($)
                 driver.cart.lineItems[0].quantity = this.getQuantity(formData);
             },
             setOptionsToModel(formData, productModel) {
+                const self = this;
                 const formOptions = formData.filter( x => { return x['name'].startsWith('options['); });
                 formOptions.forEach(formOption => {
                     try {
@@ -189,17 +188,39 @@ define(['jquery'], function($)
                         const optionValue = formOption['value'];
                         
                         const option = productModel.options.find( x => x.option_id === optionId);
+
+                        if (self.isArbitraryValue(option.values, optionValue)) {
+                            option.value = optionValue;
+                        }
+
                         option.values.forEach( value => {
-                            if (value.option_type_id === optionValue) {
+                            if (self.isPreselectedValue(value, optionValue)) {
                                 value.preselected = true;
+                                value.id = value.option_type_id;
+
+                                if (option.value && Array.isArray(option.value)) {
+                                    option.value.push(value);
+                                } else if (option.value) {
+                                    option.value = [option.value, value];
+                                } else {
+                                    option.value = value;
+                                }
+                                
                             } else {
                                 value.preselected = false;
                             }
                         });
+
                     } catch (ex) {
                         console.error('Unable to preselect option', ex);
                     }
                 });
+            },
+            isArbitraryValue(values, value) {
+                return (!values || !Array.isArray(values) || values.length === 0)  && !!value;
+            },
+            isPreselectedValue(currentValue, formValue) {
+                return currentValue.option_type_id === formValue || Array.isArray(formValue) && formValue.some(ov => ov === currentValue.option_type_id);
             },
             getQuantity(formData) {
                 let quantity = 1;
@@ -223,6 +244,14 @@ define(['jquery'], function($)
 
                     if (key.substring(0, 7) === 'option_') {
                         newKey = key.replace('option_', 'options[') + ']';
+
+                        const arrRegex = /^\d+(?:,\d+)*$/;
+
+                        if (arrRegex.test(newValue)) {
+                            newValue = newValue.split(',')
+                        } else {
+                            newValue = newValue.replace(/\+/g, ' ');
+                        }
                     }
 
                     if (key === 'quantity') {

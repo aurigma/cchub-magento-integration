@@ -203,7 +203,7 @@ class Add extends CartController implements HttpPostActionInterface
 
             $result['options'] = [];
             foreach ($options as $option) {
-                $result['options'][$option->option->id] = $option->value[0]->id;
+                $result['options'][$option->option->id] = $this->parseOptionValues($option);
             }
         }
 
@@ -214,6 +214,21 @@ class Add extends CartController implements HttpPostActionInterface
         }
 
         return $result;
+    }
+
+    private function parseOptionValues($option) 
+    {
+        if (!is_array($option->value)) {
+            return $option->value;
+        } elseif(count($option->value) == 1) {
+            return isset($option->value[0]->id) ? $option->value[0]->id : $option->value[0];
+        } else {
+            $valuesIds = [];
+            foreach($option->value as $optionValue) {
+                $valuesIds[] = $optionValue->id;
+            }
+            return $valuesIds;
+        }
     }
 
     private function getRealProductId($params)
