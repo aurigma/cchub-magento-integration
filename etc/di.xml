@@ -36,6 +36,11 @@
             <argument name="logger" xsi:type="object">Aurigma\CustomersCanvas\Logger\CustomersCanvasLogger</argument>
         </arguments>
     </type>
+    <type name="Aurigma\CustomersCanvas\Setup\UpgradeData">
+        <arguments>
+            <argument name="logger" xsi:type="object">Aurigma\CustomersCanvas\Logger\CustomersCanvasLogger</argument>
+        </arguments>
+    </type>
     <type name="Aurigma\CustomersCanvas\Setup\InstallSchema">
         <arguments>
             <argument name="logger" xsi:type="object">Aurigma\CustomersCanvas\Logger\CustomersCanvasLogger</argument>
@@ -77,6 +82,11 @@
         </arguments>
     </type>
     <type name="Aurigma\CustomersCanvas\Block\Frontend\Product\View\Editor">
+        <arguments>
+            <argument name="logger" xsi:type="object">Aurigma\CustomersCanvas\Logger\CustomersCanvasLogger</argument>
+        </arguments>
+    </type>
+    <type name="Aurigma\CustomersCanvas\Block\Frontend\Product\View\SimpleEditor">
         <arguments>
             <argument name="logger" xsi:type="object">Aurigma\CustomersCanvas\Logger\CustomersCanvasLogger</argument>
         </arguments>

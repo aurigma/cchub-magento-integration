@@ -4,19 +4,18 @@ namespace Aurigma\CustomersCanvas\Setup;
 use Magento\Eav\Setup\EavSetup;
 use Magento\Eav\Setup\EavSetupFactory;
 use Magento\Catalog\Model\Product;
-use Magento\Framework\Setup\InstallDataInterface;
+use Magento\Framework\Setup\UpgradeDataInterface;
 use Magento\Framework\Setup\ModuleContextInterface;
 use Magento\Framework\Setup\ModuleDataSetupInterface;
 use \Magento\Eav\Model\Entity\Attribute\ScopedAttributeInterface;
 use \Psr\Log\LoggerInterface;
+use Aurigma\CustomersCanvas\Setup\InstallData;
 
-class InstallData implements InstallDataInterface
+class UpgradeData implements UpgradeDataInterface
 {
-	public const INTEGRATED_ATTRIBUTE = 'customers_canvas_integrated';
-	public const EDITOR_FAMILY_ATTRIBUTE = 'customers_canvas_editor_family';
-
 	private $eavSetupFactory;
     protected $_logger;
+	private $eavSetup;
 
 	public function __construct(EavSetupFactory $eavSetupFactory, LoggerInterface $logger)
 	{
@@ -24,47 +23,14 @@ class InstallData implements InstallDataInterface
         $this->_logger = $logger;
 	}
 
-    public function install(ModuleDataSetupInterface $setup, ModuleContextInterface $context)
+    public function upgrade(ModuleDataSetupInterface $setup, ModuleContextInterface $context)
     {
-		$eavSetup = $this->eavSetupFactory->create(['setup' => $setup]);
+		$this->eavSetup = $this->eavSetupFactory->create(['setup' => $setup]);
 
-		try {
-			$this->_logger->info('Customer\'s Canvas Integrated Attribute started adding to General set.', $this->getLogContext(__METHOD__));
-			$eavSetup->addAttribute(
-				Product::ENTITY,
-				InstallData::INTEGRATED_ATTRIBUTE,
-				[
-					'group' => 'General',
-					'type' => 'int',
-					'backend' => '',
-					'frontend' => '',
-					'label' => __('Integrated with Customer\'s Canvas'),
-					'input' => 'select',
-					'class' => '',
-					'source' => 'Magento\Eav\Model\Entity\Attribute\Source\Boolean',
-					'global' => ScopedAttributeInterface::SCOPE_GLOBAL,
-					'visible' => false,
-					'required' => true,
-					'user_defined' => false,
-					'default' => '0',
-					'searchable' => false,
-					'filterable' => false,
-					'comparable' => false,
-					'visible_on_front' => false,
-					'used_in_product_listing' => true,
-					'unique' => false,
-					'apply_to' => ''
-				]
-			);
+		$this->_logger->info('Upgrading process started', $this->getLogContext(__METHOD__));
 
-			$this->_logger->info('Customer\'s Canvas Integrated Attribute was added to General set.', $this->getLogContext(__METHOD__));
-
-		} catch (\Throwable $e) {
-			$this->_logger->error(
-                'Error when install Customer\'s Canvas Integrated Attribute. '. PHP_EOL . $e->getMessage() . PHP_EOL . $e->getTraceAsString(), 
-                $this->getLogContext(__METHOD__)
-            );
-            throw $e;
+		if($this->IsEditorFamilyAttributeExists()) {
+			return;
 		}
 
 		try {
@@ -81,7 +47,7 @@ class InstallData implements InstallDataInterface
 					'label' => __('Customer\'s Canvas Editor Family'),
 					'input' => 'select',
 					'class' => '',
-					'source' => '',
+					'source' => 'Magento\Eav\Model\Entity\Attribute\Source\Boolean',
 					'global' => ScopedAttributeInterface::SCOPE_GLOBAL,
 					'visible' => false,
 					'required' => true,
@@ -111,6 +77,29 @@ class InstallData implements InstallDataInterface
 	{
         return array('class' => get_class($this), 'method' => $methodName);
     }
-}
 
+	private function IsEditorFamilyAttributeExists() 
+	{
+		$this->_logger->info('Making attempt to get Editor Family Attribute', $this->getLogContext(__METHOD__));
+
+		try{
+			$attributeId = $this->eavSetup->getAttributeId(Product::ENTITY, InstallData::EDITOR_FAMILY_ATTRIBUTE);
+			if(empty($attributeId) || $attributeId === null){
+				$this->_logger->info('Editor Family Attribute does not exists', $this->getLogContext(__METHOD__));
+				return false;
+			}
+			else{
+				$this->_logger->info('Editor Family Attribute exists', $this->getLogContext(__METHOD__));
+				return true;
+			}
+		}
+		catch(\Throwable $e) {
+			$this->_logger->error(
+                'Error when getting Editor Family Attribute'. PHP_EOL . $e->getMessage() . PHP_EOL . $e->getTraceAsString(), 
+                $this->getLogContext(__METHOD__)
+            );
+            throw $e;
+		}
+    }
+}
 ?>

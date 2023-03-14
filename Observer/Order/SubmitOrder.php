@@ -94,6 +94,10 @@ class SubmitOrder implements ObserverInterface
                 $backOfficeProject->setProperties($this->setRegularUser($backOfficeProject->getProperties(), $userId));
             }
 
+            if (!$customerNiceName) {
+                $customerNiceName = $order->getCustomerName();
+            }
+
             $submitProductId = $this->getProductIdForbackOffice($quoteItem);
             $createdProject = $this->projectHelper->createProject(
                 $backOfficeProject, 

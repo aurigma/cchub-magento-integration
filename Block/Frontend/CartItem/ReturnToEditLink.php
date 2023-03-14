@@ -73,6 +73,18 @@ class ReturnToEditLink extends Template
         }
     }
 
+    public function isSnapshotEmpty()
+    {
+        $item = $this->getItem();
+        $project = $this->getBackOfficeProjectForItem($item);
+        $snapshot = $this->projectHelper->getSnapshotFromProject($project);
+        if (empty($snapshot)) {
+            return true;
+        } else {
+            return false;
+        }
+    }
+
     public function isOptionBasedProduct()
     {
         $item = $this->getItem();

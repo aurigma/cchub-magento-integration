@@ -41,8 +41,7 @@ class StorefrontUsersService
 
             $response = $storefrontUsersApi->storefrontUsersMergeAnonymous(
                 $this->settings->getBackOfficeStorefrontId(), 
-                $this->settings->getBackOfficeTenantId(), 
-                null, 
+                $this->settings->getBackOfficeTenantId(),
                 $mergeInfo);
 
             $this->_logger->info("Anonymous user($anonymousStorefrontUserId) was merged with regular user($regularStorefrontUserId): "
@@ -65,8 +64,7 @@ class StorefrontUsersService
             $response = $storefrontUsersApi->storefrontUsersGet(
                 $regularStorefrontUserId, 
                 $this->settings->getBackOfficeStorefrontId(), 
-                $this->settings->getBackOfficeTenantId(), 
-                null);
+                $this->settings->getBackOfficeTenantId());
 
             $this->_logger->debug("Storefront user($regularStorefrontUserId) was received". PHP_EOL, $this->getLogContext(__METHOD__));
             return $response;
@@ -90,8 +88,7 @@ class StorefrontUsersService
 
             $response = $storefrontUsersApi->storefrontUsersCreate(
                 $this->settings->getBackOfficeStorefrontId(), 
-                $this->settings->getBackOfficeTenantId(), 
-                null, 
+                $this->settings->getBackOfficeTenantId(),
                 $createInfo);
 
             $this->_logger->info("Regular storefront user($regularStorefrontUserId) was created.", $this->getLogContext(__METHOD__));

@@ -10,7 +10,9 @@ use \Aurigma\Storefront\HeaderSelector;
 use \Aurigma\Storefront\Configuration;
 use \Aurigma\Storefront\Api\ProjectsApi;
 use \Aurigma\Storefront\Model\CreateProjectDto;
-use \Aurigma\Storefront\Model\ProjectItemDto;
+use Aurigma\Storefront\Model\ProjectItemParametersDto;
+use Aurigma\Storefront\Model\ProjectItemResourceParametersDto;
+use Aurigma\Storefront\Model\ProjectItemResourceType;
 
 use Aurigma\CustomersCanvas\Api\PluginSettingsManager;
 use Aurigma\CustomersCanvas\Helper\BackOfficeTokenHelper;
@@ -38,7 +40,7 @@ class ProjectsHelper extends AbstractHelper
         $projectApi = $this->createApiClient($this->settings);
 
         $createProjectDto = $this->createProjectDtoObject($project, $userId, $userName, $orderId, $productId, $productName, $orderUrl);
-        $response = $projectApi->projectsCreate($this->settings->getBackOfficeStorefrontId(), $this->settings->getBackOfficeTenantId(), null, $createProjectDto);
+        $response = $projectApi->projectsCreate($this->settings->getBackOfficeStorefrontId(), $this->settings->getBackOfficeTenantId(), $createProjectDto);
         $this->_logger->debug('Project was created in Back Office: ' . json_encode($response) , $this->getLogContext(__METHOD__));
         return $response;
     }
@@ -47,7 +49,7 @@ class ProjectsHelper extends AbstractHelper
     {
         $projectApi = $this->createApiClient($this->settings);
 
-        $response = $projectApi->projectsForceStatus($projectId, $newStatusCode, $this->settings->getBackOfficeTenantId(), null);
+        $response = $projectApi->projectsForceStatus($projectId, $newStatusCode, $this->settings->getBackOfficeTenantId());
         $this->_logger->debug('Project ' . $projectId . ' status was changed in Back Office to code ' . $newStatusCode , $this->getLogContext(__METHOD__));
         return $response;
     }
@@ -94,15 +96,41 @@ class ProjectsHelper extends AbstractHelper
             unset($fields['files']);
         }
 
-        $result[] = new ProjectItemDto(array(
+        $resourcesRaw = isset($properties->{'resources'}) ? (array) $properties->{'resources'} : array();
+        $resources = array();
+        foreach ($resourcesRaw as $key => $resourceRaw) {
+            $resources[] = new ProjectItemResourceParametersDto(array(
+                'url' => $resourceRaw->url,
+                'name' => $resourceRaw->name,
+                'type' => $this->convertNumberToResourceType($resourceRaw->type)
+            ));
+        }
+
+        $result[] = new ProjectItemParametersDto(array(
             'name' => $productName,
             'fields' => $fields,
             'hidden' => $hidden,
             'design_ids' => $stateIds,
             'quantity' => $project->getQuantity(),
+            'resources' => $resources,
         ));
 
         return $result;
+    }
+
+    private function convertNumberToResourceType(int $typeNumber) 
+    {
+        switch ($typeNumber) {
+            case 1:
+                return ProjectItemResourceType::PREVIEW;
+                break;
+            case 2:
+                return ProjectItemResourceType::HIRES;
+                break;
+            default:
+                return ProjectItemResourceType::GENERAL;
+                break;
+        }
     }
 
     private function createApiClient($settings)

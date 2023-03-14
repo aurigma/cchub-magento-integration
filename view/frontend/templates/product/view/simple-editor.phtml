@@ -1,0 +1,36 @@
+<?php if ($block->isProductIntegrated() && $block->isProductForSe()) { ?>
+    
+    <div id="customers-canvas__shroud">
+        <img class="customers-canvas__page-spinner" src="<?= $this->getViewFileUrl('Aurigma_CustomersCanvas::images/spinner-load.png'); ?>" alt="spinner" />
+    </div>
+    
+    <au-simple-editor></au-simple-editor>
+    <script id="se-source"></script>
+
+    <script type="text/x-magento-init">
+        {
+            "*": {
+                "Aurigma_CustomersCanvas/js/simple-editor-view-helper": {},
+                "Aurigma_CustomersCanvas/js/simple-editor-loader": {
+                    "pluginSettings": {
+                        "customersCanvasBaseUrl": <?= json_encode($block->getBackOfficeUrl()); ?>,
+                        "magentoBaseUrl": <?= json_encode($block->getBaseUrl()); ?>,
+                        "addToCartUrl": <?= json_encode($block->getAddToCartUrl()); ?>,
+                        "redirectToCartAfterAdd": <?= json_encode($block->isRedirectToCartEnabled()); ?>
+                    },
+                    "userInfo": {
+                        "id": <?= json_encode($block->getModifyCustomerId()); ?>
+                    },
+                    "commonSettings": {
+                        "tenantId": <?= json_encode($block->getTenantId()); ?>,
+                        "storefrontId": <?= json_encode($block->getStorefrontId()); ?>
+                    },
+                    "productModel": {
+                        "id": <?= json_encode($block->getProductId()); ?>
+                    }
+                }
+            }
+        }   
+    </script>
+
+<?php } ?>

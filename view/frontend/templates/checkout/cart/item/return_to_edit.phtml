@@ -1,5 +1,5 @@
-<?php if ($block->isPersonalized()) { ?>
+<?php if ($block->isPersonalized() && !$block->isSnapshotEmpty() ) { ?>
 <div>
-    <a id="return_to_edit_<?= $block->getItemId(); ?>" href="<?= $block->getReturnToEditLink(); ?>" ><?= __('Return to edit'); ?></a>
+    <a id="edit_product_<?= $block->getItemId(); ?>" href="<?= $block->getReturnToEditLink(); ?>" ><?= __('Edit product'); ?></a>
 </div>
 <?php } ?>
