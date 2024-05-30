@@ -17,10 +17,11 @@
             "email": "info@aurigma.com"
         }
     ],
+    "minimum-stability": "dev",
     "require": {
-        "php": "~7.3.0||~7.4.0",
-        "aurigma/php-storefront-client": "^1.1",
-        "aurigma/php-asset-storage-client": "^1.1",
+        "php": "^7.4 || ^8.0",
+        "aurigma/php-storefront-client": "dev-update-generation-version",
+        "aurigma/php-asset-storage-client": "dev-update-generation-version",
         "jumbojett/openid-connect-php": "^0.9.2"
     },
     "autoload": {
