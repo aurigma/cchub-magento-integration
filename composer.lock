@@ -4,7 +4,7 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#installing-dependencies",
         "This file is @generated automatically"
     ],
-    "content-hash": "cf9a5ba5178f28e1181e2e5dd652c8b2",
+    "content-hash": "b4f1cf43d213f99efa55a47f1ccd5338",
     "packages": [
         {
             "name": "aurigma/php-asset-storage-client",
