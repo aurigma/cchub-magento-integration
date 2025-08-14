@@ -27,9 +27,18 @@ class InstallData implements InstallDataInterface
     public function install(ModuleDataSetupInterface $setup, ModuleContextInterface $context)
     {
 		$eavSetup = $this->eavSetupFactory->create(['setup' => $setup]);
+		$this->addIntegratedAttribute($eavSetup);
+		$this->addEditorFamilyAttribute($eavSetup);	
+    }
 
+	private function addIntegratedAttribute($eavSetup): void
+	{
 		try {
-			$this->_logger->info('Customer\'s Canvas Integrated Attribute started adding to General set.', $this->getLogContext(__METHOD__));
+			$this->_logger->info(
+				'Customer\'s Canvas Integrated Attribute started adding to General set.', 
+				$this->getLogContext(__METHOD__)
+			);
+			
 			$eavSetup->addAttribute(
 				Product::ENTITY,
 				InstallData::INTEGRATED_ATTRIBUTE,
@@ -66,11 +75,17 @@ class InstallData implements InstallDataInterface
             );
             throw $e;
 		}
+	}
 
+	private function addEditorFamilyAttribute($eavSetup): void
+	{
 		try {
-			$this->_logger->info('Customer\'s Canvas Editor Family Attribute started adding to General set.', $this->getLogContext(__METHOD__));
+			$this->_logger->info(
+				'Customer\'s Canvas Editor Family Attribute started adding to General set.', 
+				$this->getLogContext(__METHOD__)
+			);
 			
-			$this->eavSetup->addAttribute(
+			$eavSetup->addAttribute(
 				Product::ENTITY,
 				InstallData::EDITOR_FAMILY_ATTRIBUTE,
 				[
@@ -96,7 +111,7 @@ class InstallData implements InstallDataInterface
 					'apply_to' => ''
 				]
 			);
-			$this->_logger->info('Customer\'s Editor Family Attribute was added to General set.', $this->getLogContext(__METHOD__));
+			$this->_logger->info('Customer\'s Canvas Editor Family Attribute was added to General set.', $this->getLogContext(__METHOD__));
 
 		} catch (\Throwable $e) {
 			$this->_logger->error(
@@ -105,12 +120,10 @@ class InstallData implements InstallDataInterface
 			);
 			throw $e;
 		}
-    }
+	}
 
 	private function getLogContext(string $methodName) 
 	{
         return array('class' => get_class($this), 'method' => $methodName);
     }
 }
-
-?>

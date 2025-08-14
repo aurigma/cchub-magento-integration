@@ -15,7 +15,6 @@ class UpgradeData implements UpgradeDataInterface
 {
 	private $eavSetupFactory;
     protected $_logger;
-	private $eavSetup;
 
 	public function __construct(EavSetupFactory $eavSetupFactory, LoggerInterface $logger)
 	{
@@ -25,18 +24,24 @@ class UpgradeData implements UpgradeDataInterface
 
     public function upgrade(ModuleDataSetupInterface $setup, ModuleContextInterface $context)
     {
-		$this->eavSetup = $this->eavSetupFactory->create(['setup' => $setup]);
-
+		$eavSetup = $this->eavSetupFactory->create(['setup' => $setup]);
 		$this->_logger->info('Upgrading process started', $this->getLogContext(__METHOD__));
+		$this->addEditorFamilyAttributeIfNotExist($eavSetup);
+    }
 
-		if($this->IsEditorFamilyAttributeExists()) {
+	private function addEditorFamilyAttributeIfNotExist($eavSetup): void
+	{
+		if($this->isEditorFamilyAttributeExists($eavSetup)) {
 			return;
 		}
 
 		try {
-			$this->_logger->info('Customer\'s Canvas Editor Family Attribute started adding to General set.', $this->getLogContext(__METHOD__));
+			$this->_logger->info(
+				'Customer\'s Canvas Editor Family Attribute started adding to General set.'
+				, $this->getLogContext(__METHOD__)
+			);
 			
-			$this->eavSetup->addAttribute(
+			$eavSetup->addAttribute(
 				Product::ENTITY,
 				InstallData::EDITOR_FAMILY_ATTRIBUTE,
 				[
@@ -62,7 +67,7 @@ class UpgradeData implements UpgradeDataInterface
 					'apply_to' => ''
 				]
 			);
-			$this->_logger->info('Customer\'s Editor Family Attribute was added to General set.', $this->getLogContext(__METHOD__));
+			$this->_logger->info('Customer\'s Canvas Editor Family Attribute was added to General set.', $this->getLogContext(__METHOD__));
 
 		} catch (\Throwable $e) {
 			$this->_logger->error(
@@ -71,19 +76,19 @@ class UpgradeData implements UpgradeDataInterface
 			);
 			throw $e;
 		}
-    }
+	}
 
 	private function getLogContext(string $methodName) 
 	{
         return array('class' => get_class($this), 'method' => $methodName);
     }
 
-	private function IsEditorFamilyAttributeExists() 
+	private function isEditorFamilyAttributeExists($eavSetup) 
 	{
 		$this->_logger->info('Making attempt to get Editor Family Attribute', $this->getLogContext(__METHOD__));
 
 		try{
-			$attributeId = $this->eavSetup->getAttributeId(Product::ENTITY, InstallData::EDITOR_FAMILY_ATTRIBUTE);
+			$attributeId = $eavSetup->getAttributeId(Product::ENTITY, InstallData::EDITOR_FAMILY_ATTRIBUTE);
 			if(empty($attributeId) || $attributeId === null){
 				$this->_logger->info('Editor Family Attribute does not exists', $this->getLogContext(__METHOD__));
 				return false;
@@ -102,4 +107,3 @@ class UpgradeData implements UpgradeDataInterface
 		}
     }
 }
-?>
