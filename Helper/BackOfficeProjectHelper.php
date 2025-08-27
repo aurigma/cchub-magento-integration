@@ -43,7 +43,7 @@ class BackOfficeProjectHelper extends AbstractHelper
     {
         $snapshot = '';
         $properties = json_decode($propertiesString);
-        if ($properties && isset($properties->_hidden)) {
+        if ($properties && isset($properties->_hidden) && isset($properties->_hidden->snapshot)) {
             $snapshot = $properties->_hidden->snapshot;
         }
         return $snapshot;
@@ -64,11 +64,9 @@ class BackOfficeProjectHelper extends AbstractHelper
     {
         $stateId = '';
         $properties = json_decode($propertiesString);
-        if ($properties && isset($properties->_stateId)) {
+        if ($properties && isset($properties->_stateId) && isset($properties->_stateId[0])) {
             $stateId = $properties->_stateId[0];
         }  
         return $stateId;
     }
 }
-
-?>
