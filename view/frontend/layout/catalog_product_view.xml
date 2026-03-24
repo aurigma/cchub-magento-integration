@@ -10,4 +10,7 @@
     <referenceContainer name="content">
         <block name="customerscanvas.product.view.simpleeditor" class="Aurigma\CustomersCanvas\Block\Frontend\Product\View\SimpleEditor" before="product.info.main" />
     </referenceContainer>
+    <referenceContainer name="content">
+        <block name="customerscanvas.product.view.handyeditor" class="Aurigma\CustomersCanvas\Block\Frontend\Product\View\HandyEditor" before="product.info.main" />
+    </referenceContainer>
 </page>

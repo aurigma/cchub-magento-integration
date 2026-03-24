@@ -2,30 +2,29 @@
 
 namespace Aurigma\CustomersCanvas\Block\Frontend\Product\View;
 
-use \Magento\Framework\View\Element\Template;
-use \Magento\Framework\View\Element\Template\Context;
-use \Magento\Framework\Registry;
-use \Magento\Store\Model\StoreManagerInterface;
-use \Magento\Framework\Locale\Resolver;
-use \Magento\Framework\App\Http\Context as HttpContext;
-use \Magento\Store\Model\ScopeInterface;
-use \Magento\Framework\App\Config\ScopeConfigInterface;
-use \Magento\Catalog\Model\Product\Option;
-use \Psr\Log\LoggerInterface;
+use Magento\Framework\App\Config\ScopeConfigInterface;
+use Magento\Framework\App\Http\Context as HttpContext;
+use Magento\Framework\Registry;
+use Magento\Store\Model\ScopeInterface;
+use Magento\Store\Model\StoreManagerInterface;
+use Magento\Framework\View\Element\Template;
+use Magento\Framework\View\Element\Template\Context;
+use Magento\ConfigurableProduct\Model\Product\Type\Configurable as ConfigurableType;
 
 use Aurigma\CustomersCanvas\Api\PluginSettingsManager;
+use Aurigma\CustomersCanvas\Api\StorefrontUsersService;
 use Aurigma\CustomersCanvas\Helper\EditorFamilyResolver;
-use Aurigma\CustomersCanvas\Setup\InstallData;
 use Aurigma\CustomersCanvas\Plugin\Session\CustomerSessionContext;
+use Aurigma\CustomersCanvas\Setup\InstallData;
 
-class SimpleEditor extends Template
+class HandyEditor extends Template
 {
     /**
      * Block template File
      *
      * @var string
      */
-    protected $_template = 'Aurigma_CustomersCanvas::product/view/simple-editor.phtml';
+    protected $_template = 'Aurigma_CustomersCanvas::product/view/handy-editor.phtml';
 
     /**
      * @var Product
@@ -33,16 +32,16 @@ class SimpleEditor extends Template
     protected $_product = null;
 
     /**
-     * @var \Magento\Store\Model\StoreManagerInterface
-     */
-    protected $storeManager = null;
-
-    /**
      * Core registry
      *
      * @var \Magento\Framework\Registry
      */
     protected $_coreRegistry = null;
+
+    /**
+     * @var \Magento\Store\Model\StoreManagerInterface
+     */
+    protected $storeManager = null;
 
     /**
      * @var \Magento\Framework\App\Http\Context
@@ -55,50 +54,41 @@ class SimpleEditor extends Template
     protected $settings;
 
     /**
-     * @var Magento\Catalog\Model\Product\Option
-     */
-    protected $optionLoader;
-
-    /**
      * @var ScopeConfigInterface
      */
     protected $scopeConfig;
 
-    protected $_logger;
+    /**
+     * @var StorefrontUsersService
+     */
+    protected $storefrontUsersService;
 
     /**
      * @param \Magento\Framework\View\Element\Template\Context $context
      * @param \Magento\Framework\Registry $registry
      * @param \Magento\Store\Model\StoreManagerInterface $storeManager
-     * @param \Magento\Framework\Locale\Resolver $localeResolver
      * @param \Magento\Framework\App\Http\Context $httpContext
-     * @param \Magento\Catalog\Model\Product\Option $optionLoader
      * @param \Aurigma\CustomersCanvas\Api\PluginSettingsManager $settingManager
-     * @param \Magento\Framework\App\Config\ScopeConfigInterface;
-     * @param \Psr\Log\LoggerInterface $logger
+     * @param \Aurigma\CustomersCanvas\Api\StorefrontUsersService $storefrontUsersService
+     * @param \Magento\Framework\App\Config\ScopeConfigInterface $scopeConfig
      * @param array $data
      */
     public function __construct(
         Context $context,
         Registry $registry,
         StoreManagerInterface $storeManager,
-        Resolver $localeResolver,
         HttpContext $httpContext,
-        Option $optionLoader,
         PluginSettingsManager $settingManager,
+        StorefrontUsersService $storefrontUsersService,
         ScopeConfigInterface $scopeConfig,
-        LoggerInterface $logger,
         array $data = []
     ) {
         $this->_coreRegistry = $registry;
         $this->storeManager = $storeManager;
-        $this->localeResolver = $localeResolver;
         $this->httpContext = $httpContext;
-        $this->optionLoader = $optionLoader;
         $this->scopeConfig = $scopeConfig;
-        $this->_logger = $logger;
-
         $this->settings = $settingManager->getSettings(ScopeInterface::SCOPE_STORE);
+        $this->storefrontUsersService = $storefrontUsersService;
         parent::__construct($context, $data);
     }
 
@@ -124,10 +114,10 @@ class SimpleEditor extends Template
     /**
      * @return bool
      */
-    public function isProductForSe()
+    public function isProductForHandy()
     {
         $editorFamilyValue = $this->getProduct()->getData(InstallData::EDITOR_FAMILY_ATTRIBUTE);
-        return EditorFamilyResolver::isSe($editorFamilyValue);
+        return EditorFamilyResolver::isHandy($editorFamilyValue);
     }
 
     /**
@@ -136,6 +126,35 @@ class SimpleEditor extends Template
     public function getProductId()
     {
         return $this->getProduct()->getId();
+    }
+
+    /**
+     * @return string
+     */
+    public function getProductSku()
+    {
+        return $this->getProduct()->getSku();
+    }
+
+    /**
+     * Returns map of configurable child product IDs to child SKUs.
+     *
+     * @return array<string, string>
+     */
+    public function getVariantSkuMap()
+    {
+        $product = $this->getProduct();
+        if (!$product || $product->getTypeId() !== ConfigurableType::TYPE_CODE) {
+            return [];
+        }
+
+        $result = [];
+        $children = $product->getTypeInstance()->getUsedProducts($product);
+        foreach ($children as $child) {
+            $result[(string) $child->getId()] = (string) $child->getSku();
+        }
+
+        return $result;
     }
 
     /**
@@ -181,9 +200,38 @@ class SimpleEditor extends Template
     /**
      * @return string
      */
-    public function getModifyCustomerId() 
+    public function getModifyCustomerId()
     {
         return $this->httpContext->getValue(CustomerSessionContext::MODIFY_CUSTOMER_ID_KEY);
+    }
+
+    /**
+     * @return string
+     */
+    public function getStorefrontUserToken()
+    {
+        $storefrontUserId = $this->getModifyCustomerId();
+        if (empty($storefrontUserId)) {
+            return '';
+        }
+
+        return $this->storefrontUsersService->getCcHubTokenForStorefrontUser($storefrontUserId);
+    }
+
+    /**
+     * @return string
+     */
+    public function getStorefrontUserTokenUrl()
+    {
+        return $this->getUrl('aurigma_customers_canvas/token/get');
+    }
+
+    /**
+     * @return string
+     */
+    public function getEditorMode()
+    {
+        return $this->settings->getEditorMode();
     }
 
     /**
@@ -196,5 +244,3 @@ class SimpleEditor extends Template
         return $this->scopeConfig->getValue('checkout/cart/redirect_to_cart', ScopeInterface::SCOPE_STORE) == 1;
     }
 }
-
-?>

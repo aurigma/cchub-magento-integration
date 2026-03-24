@@ -13,6 +13,7 @@ use \Magento\Framework\App\Config\ScopeConfigInterface;
 use \Magento\Framework\App\Action\Context;
 use \Magento\Framework\Exception\NoSuchEntityException;
 use \Magento\Framework\Controller\ResultInterface;
+use \Magento\Framework\Filter\LocalizedToNormalized;
 use \Magento\Framework\Locale\ResolverInterface;
 use \Magento\Framework\Json\Helper\Data;
 use \Magento\Store\Model\ScopeInterface;
@@ -185,7 +186,7 @@ class Add extends CartController implements HttpPostActionInterface
         $result = [];
 
         if (isset($params['quantity'])) {
-            $filter = new \Zend_Filter_LocalizedToNormalized(
+            $filter = new LocalizedToNormalized(
                 ['locale' => $this->_objectManager->get(ResolverInterface::class)->getLocale()]
             );
             $result['qty'] = $filter->filter($params['quantity']);

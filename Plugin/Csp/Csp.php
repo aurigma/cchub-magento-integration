@@ -92,6 +92,10 @@ class Csp
         $defaultPolicies = array_merge($defaultPolicies, $this->addUrlToWhiteList('dm-designatomsapi-qaenv.azurewebsites.net', $policyIds));
         $defaultPolicies = array_merge($defaultPolicies, $this->addUrlToWhiteList('dm-designatomsapi-devenv.azurewebsites.net', $policyIds));
 
+        
+        $defaultPolicies = array_merge($defaultPolicies, $this->addUrlToWhiteList('10.183.111.24', $policyIds));
+        $defaultPolicies = array_merge($defaultPolicies, $this->addUrlToWhiteList('backoffice-dev.main.aurigma.com', $policyIds));
+
         return $defaultPolicies;
     }
 

@@ -14,6 +14,9 @@ class InstallData implements InstallDataInterface
 {
 	public const INTEGRATED_ATTRIBUTE = 'customers_canvas_integrated';
 	public const EDITOR_FAMILY_ATTRIBUTE = 'customers_canvas_editor_family';
+	public const EDITOR_FAMILY_UIF_VALUE = 0;
+	public const EDITOR_FAMILY_SE_VALUE = 1;
+	public const EDITOR_FAMILY_HANDY_VALUE = 3;
 
 	private $eavSetupFactory;
     protected $_logger;

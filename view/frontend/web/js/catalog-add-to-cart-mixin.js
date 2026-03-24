@@ -3,13 +3,15 @@ define([
     'mage/translate',
     'jquery/ui',
     'Aurigma_CustomersCanvas/js/editor-view-helper',
+    'Aurigma_CustomersCanvas/js/handy-editor-view-helper',
     'Magento_Catalog/js/product/view/product-ids-resolver',
     'Magento_Customer/js/customer-data'
 ],
-function ($, $t, $ui, editorHelperFactory, idsResolver, customerData) {
+function ($, $t, $ui, editorHelperFactory, handyEditorHelperFactory, idsResolver, customerData) {
     'use strict';
 
     const editorHelper = editorHelperFactory();
+    const handyEditorHelper = handyEditorHelperFactory();
 
     function formDataToDictionary(formData) {
         const result = [];
@@ -33,6 +35,15 @@ function ($, $t, $ui, editorHelperFactory, idsResolver, customerData) {
                     }
                 }
 
+                if (this.isHandyProduct()) {
+                    this.options.addToCartButtonTextDefault = $.mage.__('Design product');
+                    this.options.addToCartButtonTextWhileAdding = $.mage.__('Loading designer...');
+
+                    this.updateHandyButtonLabel();
+                    this._super();
+                    return;
+                }
+
                 if (!this.options.customersCanvas) {
                     this._super();
                     return;
@@ -51,10 +62,41 @@ function ($, $t, $ui, editorHelperFactory, idsResolver, customerData) {
             isIntegrated: function(productSku, integratedList) {
                 return !!productSku && integratedList.some(sku => sku === productSku);
             },
+            isHandyProduct: function() {
+                return !!handyEditorHelper.getMarker();
+            },
+            updateHandyButtonLabel: function() {
+                const button = $(this.options.addToCartButtonSelector);
+                const buttonText = this.options.addToCartButtonTextDefault || $.mage.__('Design product');
+
+                button.find('span').text(buttonText);
+                button.attr('title', buttonText);
+            },
             removeAddForm: function() {
                 this.element.remove();
             },
             submitForm: function(form) {
+                if (this.isHandyProduct()) {
+                    const self = this;
+                    const productIds = idsResolver(form);
+                    const productInfo = self.options.productInfoResolver(form);
+
+                    this.disablePersonalizeButton(form);
+                    handyEditorHelper.openEditor(
+                        form,
+                        (res) => { this.onRequestSuccessHandler(self, res, form, productIds, productInfo); },
+                        (res) => {
+                            this.enablePersonalizeButton(form);
+                            this.onRequestErrorHandler(self, res, form, productIds, productInfo);
+                        }
+                    ).then((isOpened) => {
+                        if (isOpened !== true) {
+                            this.enablePersonalizeButton(form);
+                        }
+                    });
+                    return;
+                }
+
                 if (!this.options.customersCanvas) {
                     this._super(form);
                     return;
@@ -148,6 +190,10 @@ function ($, $t, $ui, editorHelperFactory, idsResolver, customerData) {
                 self.enableAddToCartButton(form);
 
                 self.updateNecessaryUi();
+
+                if (this.isHandyProduct()) {
+                    handyEditorHelper.closeEditor();
+                }
             },
             onRequestErrorHandler: function(self, res, form, productIds, productInfo) {
                 $(document).trigger('ajax:addToCart:error', {

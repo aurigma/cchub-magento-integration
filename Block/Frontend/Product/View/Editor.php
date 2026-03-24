@@ -15,6 +15,7 @@ use \Magento\Catalog\Model\Product\Option;
 use \Psr\Log\LoggerInterface;
 
 use Aurigma\CustomersCanvas\Api\PluginSettingsManager;
+use Aurigma\CustomersCanvas\Helper\EditorFamilyResolver;
 use Aurigma\CustomersCanvas\Model\Config\Source\EditorMode;
 use Aurigma\CustomersCanvas\Setup\InstallData;
 use Aurigma\CustomersCanvas\Plugin\Session\CustomerSessionContext;
@@ -134,12 +135,7 @@ class Editor extends Template
     public function isProductForUif()
     {
         $editorFamilyValue = $this->getProduct()->getData(InstallData::EDITOR_FAMILY_ATTRIBUTE);
-        
-        if(empty($editorFamilyValue) || $editorFamilyValue == 0){
-            return true;
-        }
-
-        return false;
+        return EditorFamilyResolver::isUif($editorFamilyValue);
     }
 
     /**

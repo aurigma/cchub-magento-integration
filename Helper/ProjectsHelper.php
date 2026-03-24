@@ -38,7 +38,6 @@ class ProjectsHelper extends AbstractHelper
     public function createProject($project, string $userId, string $userName, int $orderId, int $productId, string $productName, string $orderUrl)
     {
         $projectApi = $this->createApiClient($this->settings);
-
         $createProjectDto = $this->createProjectDtoObject($project, $userId, $userName, $orderId, $productId, $productName, $orderUrl);
         $response = $projectApi->projectsCreate($this->settings->getBackOfficeStorefrontId(), $this->settings->getBackOfficeTenantId(), $createProjectDto);
         $this->_logger->debug('Project was created in Back Office: ' . json_encode($response) , $this->getLogContext(__METHOD__));
@@ -96,6 +95,11 @@ class ProjectsHelper extends AbstractHelper
             unset($fields['files']);
         }
 
+        if (empty($fields))
+        {
+            $fields = null;
+        }
+
         $resourcesRaw = isset($properties->{'resources'}) ? (array) $properties->{'resources'} : array();
         $resources = array();
         foreach ($resourcesRaw as $key => $resourceRaw) {
@@ -105,6 +109,15 @@ class ProjectsHelper extends AbstractHelper
                 'type' => $this->convertNumberToResourceType($resourceRaw->type)
             ));
         }
+
+        $this->_logger->debug(json_encode(array(
+            'name' => $productName,
+            'fields' => $fields,
+            'hidden' => $hidden,
+            'design_ids' => $stateIds,
+            'quantity' => $project->getQuantity(),
+            'resources' => $resources,
+        )) , $this->getLogContext(__METHOD__));
 
         $result[] = new ProjectItemParametersDto(array(
             'name' => $productName,

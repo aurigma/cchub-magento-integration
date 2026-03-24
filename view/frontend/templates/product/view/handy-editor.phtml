@@ -1,0 +1,74 @@
+<?php if ($block->isProductIntegrated() && $block->isProductForHandy()) { ?>
+
+    <div id="customers-canvas__handy-editor-marker" data-editor-family="handy"></div>
+
+    <div id="fullscreen-editor-overlay">
+        <div id="fullscreen-editor-container">
+            <au-handy-editor id="fullscreen-editor"></au-handy-editor>
+        </div>
+    </div>
+
+    <style>
+        #fullscreen-editor-overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            display: none;
+            align-items: center;
+            justify-content: center;
+            background-color: #fff;
+            z-index: 1000;
+        }
+
+        #fullscreen-editor-container {
+            width: 100%;
+            height: 100%;
+        }
+
+        #fullscreen-editor {
+            display: block;
+            width: 100%;
+            height: 100%;
+        }
+    </style>
+
+    <script id="he-source"></script>
+
+    <script type="text/x-magento-init">
+        {
+            "#product_addtocart_form": {
+                "catalogAddToCart": {
+                    "bindSubmit": false
+                }
+            },
+            "#customers-canvas__handy-editor-marker": {
+                "Aurigma_CustomersCanvas/js/handy-editor-loader": {
+                    "pluginSettings": {
+                        "customersCanvasBaseUrl": <?= json_encode($block->getBackOfficeUrl()); ?>,
+                        "magentoBaseUrl": <?= json_encode($block->getBaseUrl()); ?>,
+                        "addToCartUrl": <?= json_encode($block->getAddToCartUrl()); ?>,
+                        "editorMode": <?= json_encode($block->getEditorMode()); ?>,
+                        "redirectToCartAfterAdd": <?= json_encode($block->isRedirectToCartEnabled()); ?>
+                    },
+                    "userInfo": {
+                        "id": <?= json_encode($block->getModifyCustomerId()); ?>,
+                        "token": null,
+                        "tokenUrl": <?= json_encode($block->getStorefrontUserTokenUrl()); ?>
+                    },
+                    "commonSettings": {
+                        "tenantId": <?= json_encode($block->getTenantId()); ?>,
+                        "storefrontId": <?= json_encode($block->getStorefrontId()); ?>
+                    },
+                    "productModel": {
+                        "id": <?= json_encode($block->getProductId()); ?>,
+                        "sku": <?= json_encode($block->getProductSku()); ?>,
+                        "variantSkuMap": <?= json_encode($block->getVariantSkuMap()); ?>
+                    }
+                }
+            }
+        }
+    </script>
+
+<?php } ?>

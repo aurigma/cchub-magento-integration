@@ -77,13 +77,13 @@ class StorefrontUsersService
         }
     }
 
-    public function createStorefrontUser($regularStorefrontUserId)
+    public function createStorefrontUser($regularStorefrontUserId, $isAnonymous = false)
     {
         try {
             $storefrontUsersApi = $this->getStorefrontUsersApi();
 
             $createInfo = new CreateStorefrontUserDto();
-            $createInfo->setIsAnonymous(false);
+            $createInfo->setIsAnonymous($isAnonymous);
             $createInfo->setStorefrontUserId($regularStorefrontUserId);
 
             $response = $storefrontUsersApi->storefrontUsersCreate(
@@ -102,10 +102,41 @@ class StorefrontUsersService
         }
     }
 
+    public function getCcHubTokenForStorefrontUser($storefrontUserId, $isAnonymous = false): string
+    {
+        try {
+            $storefrontUsersApi = $this->getStorefrontUsersApi();
+
+            $storefrontUser = $this->getStorefrontUser($storefrontUserId);
+            if (!$storefrontUser) {
+                $this->createStorefrontUser($storefrontUserId, $isAnonymous);
+            }
+
+            $token = $storefrontUsersApi->storefrontUsersGetToken(
+                $storefrontUserId,
+                $this->settings->getBackOfficeStorefrontId(),
+                $this->settings->getBackOfficeTenantId()
+            );
+
+            if (is_string($token) && strlen($token) >= 2 && $token[0] === '"' && $token[strlen($token) - 1] === '"') {
+                $decodedToken = json_decode($token, true);
+                if (is_string($decodedToken)) {
+                    $token = $decodedToken;
+                }
+            }
+
+            return is_string($token) ? $token : '';
+        } catch (\Throwable $e) {
+            $this->_logger->error(
+                "Error when getting storefront user token with id $storefrontUserId. ". PHP_EOL . $e->getMessage() . PHP_EOL . $e->getTraceAsString(),
+                $this->getLogContext(__METHOD__)
+            );
+            return '';
+        }
+    }
+
     private function getStorefrontUsersApi()
     {
-        $this->tenantId = $this->settings->getBackOfficeTenantId();
-
         if (substr($this->settings->getBackOfficeUrl(), -1) === '/') {
             $apiUrl = substr($this->settings->getBackOfficeUrl(), 0, -1);
         } else {
