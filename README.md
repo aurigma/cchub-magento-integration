@@ -9,7 +9,7 @@ This release line supports Magento Open Source and Adobe Commerce 2.4.6 and all 
 Composer constraint used by this package:
 
 ```
-magento/framework >=102.0.0 <103.0.0
+magento/framework >=103.0.6 <103.0.7
 ```
 
 ## Installation
