@@ -58,20 +58,22 @@ class Csp
 
         $parsed = parse_url($url);
         if (isset($parsed) && isset($parsed['host'])) {
-            $defaultPolicies = array_merge($defaultPolicies, $this->addUrlToWhiteList($parsed['host'], $policyIds));
+            $host = $parsed['host'] . (isset($parsed['port']) ? ':' . $parsed['port'] : '');
+            $defaultPolicies = array_merge($defaultPolicies, $this->addUrlToWhiteList($host, $policyIds));
         }
-        
 
         $url = $this->settings->getAssetStorageUrl();
         $parsed = parse_url($url);
         if (isset($parsed) && isset($parsed['host'])) {
-            $defaultPolicies = array_merge($defaultPolicies, $this->addUrlToWhiteList($parsed['host'], $policyIds));
+            $host = $parsed['host'] . (isset($parsed['port']) ? ':' . $parsed['port'] : '');
+            $defaultPolicies = array_merge($defaultPolicies, $this->addUrlToWhiteList($host, $policyIds));
         }
 
         $url = $this->settings->getAssetProcessorUrl();
         $parsed = parse_url($url);
         if (isset($parsed) && isset($parsed['host'])) {
-            $defaultPolicies = array_merge($defaultPolicies, $this->addUrlToWhiteList($parsed['host'], $policyIds));
+            $host = $parsed['host'] . (isset($parsed['port']) ? ':' . $parsed['port'] : '');
+            $defaultPolicies = array_merge($defaultPolicies, $this->addUrlToWhiteList($host, $policyIds));
         }
 
         // TO DO: Get this programmatically
@@ -94,7 +96,7 @@ class Csp
 
         
         $defaultPolicies = array_merge($defaultPolicies, $this->addUrlToWhiteList('10.183.111.24', $policyIds));
-        $defaultPolicies = array_merge($defaultPolicies, $this->addUrlToWhiteList('backoffice-dev.main.aurigma.com', $policyIds));
+        $defaultPolicies = array_merge($defaultPolicies, $this->addUrlToWhiteList('backoffice-dev.main.aurigma.com:*', $policyIds));
 
         return $defaultPolicies;
     }
@@ -103,7 +105,7 @@ class Csp
     {
         $result = [];
 
-        $hosts = $host == 'localhost' ? [ "$host:*", $host ] : [ $host ];
+        $hosts = (preg_match('/(^localhost$|:\*)/', $host)) ? [ "$host", preg_replace('/:.*$/', '', $host) ] : [ $host ];
 
         foreach ($policyIds as $policyId) {
             $result[] = new FetchPolicy(

@@ -450,7 +450,7 @@ define([
                     this.bindEditorEvents(editor, config, onRequestSuccessHandler, onRequestErrorHandler);
                     this.showOverlay();
                     console.log('[CustomersCanvas][HandyEditor] opening editor with integration info:', integrationInfo);
-                    editor.init(editorConfig, true);
+                    editor.init(editorConfig);
                     return true;
                 } catch (error) {
                     this.hideOverlay();
